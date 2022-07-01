@@ -103,5 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
-#
+# EmojiBot Files
 config.json
+.guildIds.json
+.historyTracker.json
+.internetDieCounter.json
