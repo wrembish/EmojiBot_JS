@@ -105,6 +105,6 @@ dist
 
 # EmojiBot Files
 config.json
-.guildIds.json
-.historyTracker.json
-.internetDieCounter.json
+**/guildIds.json
+**/historyTracker.json
+**/emojibot_files/internetDieCounter.json
