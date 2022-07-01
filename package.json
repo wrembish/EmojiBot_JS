@@ -1,0 +1,17 @@
+{
+  "name": "emojibot",
+  "version": "1.0.0",
+  "description": "Javascript version of my emojiBot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Rembish",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^0.15.0",
+    "@discordjs/rest": "^0.5.0",
+    "discord-api-types": "^0.35.0",
+    "discord.js": "^13.8.1"
+  }
+}
