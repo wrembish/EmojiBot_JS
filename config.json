@@ -1,6 +1,4 @@
 {
     "token" : "YOUR TOKEN HERE",
-    "clientId" : "YOUR BOT CLIENT ID HERE",
-    "guildId" : "YOUR SERVER GUILDID HERE",
     "admin" : "YOUR ADMIN USER ID HERE"
 }
