@@ -1,5 +1,11 @@
 # EmojiBot_JS
 
+## Before Running
+* Go to the deploy-commands.js file in the root directory
+  * Replace the comment /**Bot ClientId, Server GuildId */ with your Bot's Client Id, and the server you're adding the bot to's Guild Id
+* run the deploy-commands.js file with `node deploy-commands.js`
+* Make sure you create the following mentioned files
+
 ## Files that need to be created
 * environment variables (.env or similar)
 * /emojibot_files/guildIds.json
