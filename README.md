@@ -7,8 +7,8 @@
 * /emojibot_files/internetDieCounter.json (***Currently Not Being Used***)
 
 ## Environment Variables
-TOKEN="YOUR DISCORD BOT TOKEN GOES HERE"
-ADMIN="DISCORD USER ID FOR ADMIN USER OF BOT"
+* TOKEN="YOUR DISCORD BOT TOKEN GOES HERE"
+* ADMIN="DISCORD USER ID FOR ADMIN USER OF BOT"
 
 ## guildIds.json Format
 ```json
