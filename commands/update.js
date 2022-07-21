@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
 const { Collection } = require('discord.js')
-const { admin } = require('../config.json')
 const fs = require('node:fs')
 const path = require('node:path')
 
@@ -9,7 +8,7 @@ module.exports = {
         .setName('update')
         .setDescription('Update Slash Commands'),
     async execute(interaction) {
-        if(interaction.user.id === admin) {
+        if(interaction.user.id === process.env.ADMIN) {
             try {
                 const updateSlash = require('../emojibot_files/deploy-commands.js')
                 const { succ } = require('../emojibot_files/builtInMessages.json')
