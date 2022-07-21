@@ -14,7 +14,7 @@ module.exports = {
                 const updateSlash = require('../emojibot_files/deploy-commands.js')
                 const { succ } = require('../emojibot_files/builtInMessages.json')
                 
-                updateSlash.execute()
+                updateSlash.execute(interaction.client.user.id)
 
                 interaction.client.commands = new Collection()
                 const commandsPath = path.join(__dirname, '..', 'commands')

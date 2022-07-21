@@ -1,5 +1,3 @@
-const { stringify } = require('node:querystring')
-const { clientId } = require('../config.json')
 const emoji = '!emoji '
 
 module.exports = {
@@ -18,10 +16,10 @@ module.exports = {
                 console.error
             }
             const updateSlash = require('../emojibot_files/deploy-commands')
-            updateSlash.execute()
+            updateSlash.execute(message.client.user.id)
         }
 
-        if(message.author.id === clientId) return
+        if(message.author.id === message.client.user.id) return
 
         const content = message.content
 
