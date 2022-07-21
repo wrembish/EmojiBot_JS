@@ -103,9 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
-package-lock.json
 # EmojiBot Files
-config.json
+package-lock.json
 **/guildIds.json
+config.json
 **/historyTracker.json
 **/internetDieCounter.json
