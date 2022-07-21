@@ -10,3 +10,4 @@ ADMIN="DISCORD USER ID FOR ADMIN USER OF BOT"
   "guildIds" : []
 }
 ```
+* **This File Goes into the emojibot_files folder**
