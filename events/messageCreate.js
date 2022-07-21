@@ -24,8 +24,10 @@ module.exports = {
         const content = message.content
 
         if(content.startsWith(emoji)) {
+            /* Uncomment this is you want converted emoji messages tracked 
             const trackUserMessages = require('../emojibot_files/track.js')
             trackUserMessages.execute(message)
+            */
             const contentMessage = content.substring(emoji.length)
             if(contentMessage.length >= 1)  {
                 const convert = require('../emojibot_files/convert.js')
