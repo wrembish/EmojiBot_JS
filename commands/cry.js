@@ -6,6 +6,7 @@ module.exports = {
         .setDescription('a weekly occurance'),
     async execute(interaction) {
         const convert = require('../emojibot_files/convert.js')
-        interaction.reply(':cry: ' + convert.execute('time to cry boys') + ' :cry:')
+        if(convert) await interaction.reply(':cry: ' + convert.execute('time to cry boys') + ' :cry:')
+        else await interaction.reply('Something went wrong')
     },
 }

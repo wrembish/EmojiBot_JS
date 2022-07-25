@@ -8,30 +8,35 @@ module.exports = {
         .setName('update')
         .setDescription('Update Slash Commands'),
     async execute(interaction) {
-        if(interaction.user.id === process.env.ADMIN) {
-            try {
-                const updateSlash = require('../emojibot_files/deploy-commands.js')
-                const { succ } = require('../emojibot_files/builtInMessages.json')
-                
-                updateSlash.execute(interaction.client.user.id)
+        if(fs && path) {
+            if(interaction.user.id === process.env.ADMIN) {
+                try {
+                    const updateSlash = require('../emojibot_files/deploy-commands.js')
+                    const { succ } = require('../emojibot_files/builtInMessages.json')
 
-                interaction.client.commands = new Collection()
-                const commandsPath = path.join(__dirname, '..', 'commands')
-                const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
+                    if(updateSlash && succ) {
+                        updateSlash.execute(interaction.client.user.id)
 
-                for(const file of commandFiles) {
-                    const filePath = path.join(commandsPath, file)
-                    const command = require(filePath)
-                    interaction.client.commands.set(command.data.name, command)
+                        interaction.client.commands = new Collection()
+                        const commandsPath = path.join(__dirname, '..', 'commands')
+                        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
+
+                        for(const file of commandFiles) {
+                            const filePath = path.join(commandsPath, file)
+                            const command = require(filePath)
+                            interaction.client.commands.set(command.data.name, command)
+                        }
+
+
+                        await interaction.reply(succ + '  cess')
+                    } else await interaction.reply('Something went wrong')
+                } catch(error) {
+                    console.error('Error: ', error)
+                    await interaction.reply('There was an error when trying to update the commands')
                 }
-
-
-                interaction.reply(succ + '  cess')
-            } catch(error) {
-                interaction.reply('There was an error when trying to update the commands')
+            } else {
+                await interaction.reply('You do not have permission to use this command')
             }
-        } else {
-            interaction.reply('You do not have permission to use this command')
-        }
+        } else await interaction.reply('Something went wrong')
     },
 }

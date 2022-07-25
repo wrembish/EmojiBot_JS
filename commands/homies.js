@@ -6,6 +6,7 @@ module.exports = {
         .setDescription('kissing the homies'),
     async execute(interaction) {
         const { homies } = require('../emojibot_files/builtInMessages.json')
-        await(interaction.reply(homies))
+        if(homies) await interaction.reply(homies)
+        else await interaction.reply('Something went wrong')
     },
 }

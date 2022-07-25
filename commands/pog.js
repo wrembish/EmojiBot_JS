@@ -6,6 +6,7 @@ module.exports = {
         .setDescription('pog'),
     async execute(interaction) {
         const { pog } = require('../emojibot_files/builtInMessages.json')
-        interaction.reply(pog)
+        if(pog) await interaction.reply(pog)
+        else await interaction.reply('Something went wrong')
     },
 }

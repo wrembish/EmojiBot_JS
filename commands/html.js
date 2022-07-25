@@ -6,6 +6,7 @@ module.exports = {
         .setDescription('HTML'),
     async execute(interaction) {
         const convert = require('../emojibot_files/convert.js')
-        interaction.reply(convert.execute('I can teach you HTML (How to meet ladies)'))
+        if(convert) await interaction.reply(convert.execute('I can teach you HTML (How to meet ladies)'))
+        else await interaction.reply('Something went wrong')
     },
 }
