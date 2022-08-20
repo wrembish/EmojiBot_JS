@@ -5,8 +5,9 @@ module.exports = {
         .setName('rough')
         .setDescription('my first girlfriend turned into the moon'),
     async execute(interaction) {
-        const convert = require('../emojibot_files/convert.js')
-        if(convert) await interaction.reply(convert.execute('That\'s rough buddy'))
-        else await interaction.reply('Something went wrong')
+        const sf = require('../emojibot_files/sf.js')
+        interaction.client.salesforce = await sf.checkAuth(interaction.client.salesforce)
+        const result = await sf.doPost(interaction.client.salesforce, 'services/apexrest/Convert', { 'StrToConvert' : 'That\'s rough buddy' })
+        interaction.reply(result)
     },
 }

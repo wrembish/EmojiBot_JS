@@ -1,24 +1,23 @@
 const emoji = '!emoji '
+const sf = require('../emojibot_files/sf.js')
+const helpers = require('../emojibot_files/helpers.js')
 
 module.exports = {
     name : 'messageCreate',
     async execute(message) {
-        let { guildIds } = require('../emojibot_files/guildIds.json')
-        if(guildIds && !guildIds.includes(message.guildId)) {
-            guildIds.push(message.guildId)
-            const fs = require('node:fs')
-            const path = require('node:path')
-            if(fs && path) {
-                try {
-                    let guildIdsPath = path.join(__dirname, '..', 'emojibot_files', 'guildIds.json')
-                    fs.writeFileSync( guildIdsPath, JSON.stringify({ guildIds : guildIds }) )
-                    console.log('successfully added ' + message.guild.name + ' to the list of Servers')
-                } catch(error) {
-                    console.error('Error: ', error)
-                }
-                const updateSlash = require('../emojibot_files/deploy-commands.js')
-                if(updateSlash) updateSlash.execute(message.client.user.id)
-            }
+        message.client.salesforce = await sf.checkAuth(message.client.salesforce)
+        const guildIds = []
+        const result = await sf.query(message.client.salesforce, 'SELECT+Name+FROM+GuildId__c')
+        for(const record of result.records) {
+            guildIds.push(record.Name)
+        }
+
+        if(guildIds.length != 0 && !guildIds.includes(message.guildId)) {
+            const result = await sf.insert(message.client.salesforce, 'GuildId__c', { Name : message.guildId })
+            if(result.id) console.log(`Successfully added ${message.guild.name} to the list of Servers`)
+            else console.error('Error: ', result)
+
+            await helpers.deployCommands(message.guildId)
         }
 
         if(message.author.id === message.client.user.id) return
@@ -26,14 +25,10 @@ module.exports = {
         const content = message.content
 
         if(content.startsWith(emoji)) {
-            /* Uncomment this is you want converted emoji messages tracked 
-            const trackUserMessages = require('../emojibot_files/track.js')
-            if(trackUserMessages) trackUserMessages.execute(message)
-            */
             const contentMessage = content.substring(emoji.length)
             if(contentMessage.length >= 1)  {
-                const convert = require('../emojibot_files/convert.js')
-                if(convert) await message.channel.send(convert.execute(contentMessage))
+                const result = await sf.doPost(message.client.salesforce, 'services/apexrest/Convert', { 'StrToConvert' : contentMessage })
+                await message.channel.send(result)
             }
         } else if(content.includes('/grit')) {
             const { grit } = require('../emojibot_files/builtInMessages.json')
@@ -42,11 +37,11 @@ module.exports = {
             const { succ } = require('../emojibot_files/builtInMessages.json')
             if(succ) await message.channel.send(succ)
         } else if(content === '69' || content.startsWith('69 ') || content.endsWith(' 69') || content.includes(' 69 ')) {
-            const convert = require('../emojibot_files/convert.js')
-            if(convert) await message.channel.send(convert.execute('69? nice'))
+            const result = await sf.doPost(message.client.salesforce, 'services/apexrest/Convert', { 'StrToConvert' : '69? nice' })
+            await message.channel.send(result)
         } else if(content === '420' || content.startsWith('420 ') || content.endsWith(' 420') || content.includes(' 420 ')) {
-            const convert = require('../emojibot_files/convert.js')
-            if(convert) await message.channel.send(convert.execute('420? nice'))
+            const result = await sf.doPost(message.client.salesforce, 'services/apexrest/Convert', { 'StrToConvert' : '420? nice' })
+            await message.channel.send(result)
         } else if(content.includes('/oof') || content.includes('/bigoof')) {
             const { big_oof } = require('../emojibot_files/builtInMessages.json')
             if(big_oof) await message.channel.send(big_oof)

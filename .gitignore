@@ -105,6 +105,3 @@ dist
 
 # EmojiBot Files
 package-lock.json
-**/guildIds.json
-**/historyTracker.json
-**/internetDieCounter.json
