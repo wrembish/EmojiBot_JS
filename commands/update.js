@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders')
-const { Collection } = require('discord.js')
+const { SlashCommandBuilder, Collection } = require('discord.js')
 const fs = require('node:fs')
 const path = require('node:path')
 
