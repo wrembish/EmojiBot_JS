@@ -5,8 +5,12 @@ module.exports = {
         .setName('html')
         .setDescription('HTML'),
     async execute(interaction) {
-        const convert = require('../emojibot_files/convert.js')
-        if(convert) await interaction.reply(convert.execute('I can teach you HTML (How to meet ladies)'))
-        else await interaction.reply('Something went wrong')
+        if(interaction.client.conversionMap) {
+            const { convert } = require('../emojibot_files/helpers')
+            const convertedStr = await convert(interaction.client.conversionMap, 'I can teach you HTML (How to meet ladies)')
+            await interaction.reply(convertedStr)
+        } else {
+            await interaction.reply('There was a problem connecting to the database. Please contact an administrator.')
+        }
     },
 }

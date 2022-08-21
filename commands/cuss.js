@@ -5,8 +5,10 @@ module.exports = {
         .setName('cuss')
         .setDescription('cuss'),
     async execute(interaction) {
-        const { cuss } = require('../emojibot_files/builtInMessages.json')
-        if(cuss) await interaction.reply(cuss)
-        else await interaction.reply('Something went wrong')
+        if(interaction.client.builtInMessages) {
+            await interaction.reply(interaction.client.builtInMessages.cuss)
+        } else {
+            await interaction.reply('There was a problem connecting to the database. Please contact an administrator.')
+        }
     }
 }

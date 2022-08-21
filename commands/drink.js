@@ -7,10 +7,12 @@ module.exports = {
     async execute(interaction) {
         const EMBEDCOLOR = 'LuminousVividPink'
         let result
-        await fetch('http://www.thecocktaildb.com/api/json/v1/1/random.php')
-            .then(response => response.json())
-            .then(data => result = data)
-            .catch(error => console.error('Error: ', error))
+        do {
+            await fetch('http://www.thecocktaildb.com/api/json/v1/1/random.php')
+                .then(response => response.json())
+                .then(data => result = data)
+                .catch(error => console.error('Error: ', error))
+        } while(result.strAlcoholic === 'Non alcoholic')
 
         if(!result.drinks || result.drinks.length === 0) {
             await interaction.reply('Something went wrong')

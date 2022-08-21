@@ -7,35 +7,31 @@ module.exports = {
         .setName('update')
         .setDescription('Update Slash Commands'),
     async execute(interaction) {
-        if(fs && path) {
-            if(interaction.user.id === process.env.ADMIN) {
-                try {
-                    const updateSlash = require('../emojibot_files/deploy-commands.js')
-                    const { succ } = require('../emojibot_files/builtInMessages.json')
+        if(interaction.user.id === process.env.ADMIN) {
+            try {
+                const { deployCommands } = require('../emojibot_files/helpers')
+                await deployCommands()
 
-                    if(updateSlash && succ) {
-                        updateSlash.execute(interaction.client.user.id)
+                interaction.client.commands = new Collection()
 
-                        interaction.client.commands = new Collection()
-                        const commandsPath = path.join(__dirname, '..', 'commands')
-                        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
+                const commandsPath = path.join(__dirname, '..', 'commands')
+                const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
 
-                        for(const file of commandFiles) {
-                            const filePath = path.join(commandsPath, file)
-                            const command = require(filePath)
-                            interaction.client.commands.set(command.data.name, command)
-                        }
-
-
-                        await interaction.reply(succ + '  cess')
-                    } else await interaction.reply('Something went wrong')
-                } catch(error) {
-                    console.error('Error: ', error)
-                    await interaction.reply('There was an error when trying to update the commands')
+                for(const file of commandFiles) {
+                    const filePath = path.join(commandsPath, file)
+                    const command = require(filePath)
+                    interaction.client.commands.set(command.data.name, command)
                 }
-            } else {
-                await interaction.reply('You do not have permission to use this command')
+
+                if(interaction.client.builtInMessages) {
+                    await interaction.reply(interaction.client.builtInMessages.succ + '  cess')
+                } else {
+                    await interaction.reply('There was a problem connecting to the database. Please contact an administrator.')
+                }
+            } catch(error) {
+                console.error('Error: ', error)
+                await interaction.reply('There was an error when trying to update the commands')
             }
-        } else await interaction.reply('Something went wrong')
+        }
     },
 }

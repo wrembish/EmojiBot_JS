@@ -5,8 +5,12 @@ module.exports = {
         .setName('cry')
         .setDescription('a weekly occurance'),
     async execute(interaction) {
-        const convert = require('../emojibot_files/convert.js')
-        if(convert) await interaction.reply(':cry: ' + convert.execute('time to cry boys') + ' :cry:')
-        else await interaction.reply('Something went wrong')
+        if(interaction.client.conversionMap) {
+            const { convert } = require('../emojibot_files/helpers')
+            const convertedStr = await convert(interaction.client.conversionMap, 'time to cry boys')
+            await interaction.reply(`:cry:   ${convertedStr}   :cry:`)
+        } else {
+            await interaction.reply('There was a problem connecting to the database. Please contact an administrator.')
+        }
     },
 }

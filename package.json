@@ -7,13 +7,15 @@
     "prestart": "node deploy-commands.js",
     "start": "node index.js",
     "predev": "node deploy-commands.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "import": "node database-imports/import.js"
   },
   "author": "William Rembish",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.2.0",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "mongodb": "^4.9.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
