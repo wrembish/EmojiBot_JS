@@ -7,6 +7,9 @@
 * Run the following command
   * npm run import
 * Setup the mentioned Environment Variables
+* Once everything above is setup and successful, run the program with the following command
+  * npm run start
+  * *Note:* This will automatically deploy the commands, which as mentioned later can take up to an hour to deploy
 
 ## Files that need to be created
 * environment variables (.env or similar)
