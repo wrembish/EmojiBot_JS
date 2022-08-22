@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+const { EMBEDCOLOR } = require('../emojibot_files/constants')
 
 module.exports = {
     data : new SlashCommandBuilder()
         .setName('drink')
         .setDescription('Get a random drink recommendation'),
     async execute(interaction) {
-        const EMBEDCOLOR = 'LuminousVividPink'
         let result
         do {
             await fetch('http://www.thecocktaildb.com/api/json/v1/1/random.php')
@@ -15,7 +15,7 @@ module.exports = {
         } while(result.strAlcoholic === 'Non alcoholic')
 
         if(!result.drinks || result.drinks.length === 0) {
-            await interaction.reply('Something went wrong')
+            await interaction.reply({ content : 'Something went wrong', ephemeral : true })
             console.error('Error: ', result)
             return
         }

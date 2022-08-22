@@ -1,4 +1,4 @@
-const emoji = '!emoji '
+const { emoji, DATABASEERRORMESSAGE } = require('../emojibot_files/constants.js')
 
 module.exports = {
     name : 'messageCreate',
@@ -15,20 +15,20 @@ module.exports = {
                     const convertedStr = await convert(message.client.conversionMap, contentMessage)
                     await message.channel.send(convertedStr)
                 } else {    
-                    await message.channel.send('There was a problem connecting to the database. Please contact an administrator.')
+                    await message.channel.send({ content : DATABASEERRORMESSAGE, ephemeral : true })
                 }
             }
         } else if(content.includes('/grit')) {
             if(message.client.builtInMessages) {
                 await message.channel.send(message.client.builtInMessages.grit)
             } else {
-                await message.channel.send('There was a problem connecting to the database. Please contact an administrator.')
+                await message.channel.send({ content : DATABASEERRORMESSAGE, ephemeral : true })
             }
         } else if(content.toUpperCase().includes('SUCK')) {
             if(message.client.builtInMessages) {
                 await message.channel.send(message.client.builtInMessages.succ)
             } else {
-                await message.channel.send('There was a problem connecting to the database. Please contact an administrator.')
+                await message.channel.send({ content : DATABASEERRORMESSAGE, ephemeral : true })
             }
         } else if(content === '69' || content.startsWith('69 ') || content.endsWith(' 69') || content.includes(' 69 ')) {
             if(message.client.conversionMap) {
@@ -36,7 +36,7 @@ module.exports = {
                 const convertedStr = await convert(message.client.conversionMap, '69? nice')
                 await message.channel.send(convertedStr)
             } else {    
-                await message.channel.send('There was a problem connecting to the database. Please contact an administrator.')
+                await message.channel.send({ content : DATABASEERRORMESSAGE, ephemeral : true })
             }
         } else if(content === '420' || content.startsWith('420 ') || content.endsWith(' 420') || content.includes(' 420 ')) {
             if(message.client.conversionMap) {
@@ -44,13 +44,13 @@ module.exports = {
                 const convertedStr = await convert(message.client.conversionMap, '420? nice')
                 await message.channel.send(convertedStr)
             } else {    
-                await message.channel.send('There was a problem connecting to the database. Please contact an administrator.')
+                await message.channel.send({ content : DATABASEERRORMESSAGE, ephemeral : true })
             }
         } else if(content.includes('/oof') || content.includes('/bigoof')) {
             if(message.client.builtInMessages) {
                 await message.channel.send(message.client.builtInMessages.big_oof)
             } else {
-                await message.channel.send('There was a problem connecting to the database. Please contact an administrator.')
+                await message.channel.send({ content : DATABASEERRORMESSAGE, ephemeral : true })
             }
         }
 

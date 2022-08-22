@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
+const { DATABASEERRORMESSAGE } = require('../emojibot_files/constants')
 
 module.exports = {
     data : new SlashCommandBuilder()
@@ -8,7 +9,7 @@ module.exports = {
         if(interaction.client.builtInMessages) {
             await interaction.reply(interaction.client.builtInMessages.succ)
         } else {
-            await interaction.reply('There was a problem connecting to the database. Please contact an administrator.')
+            await interaction.reply({ content : DATABASEERRORMESSAGE, ephemeral : true })
         }
     },
 }

@@ -310,12 +310,13 @@ const builtInMessages = [
 
 require('dotenv').config()
 const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('../emojibot_files/constants')
 
 const client = new MongoClient(process.env.MONGODB_URL, { useNewUrlParser : true, useUnifiedTopology :true, serverApi  : ServerApiVersion.v1 })
 client.connect(async error => {
   if(!error) {
-    await client.db('ConversionMap').collection('Character').insertMany(conversionMap)
-    await client.db('ConversionMap').collection('BuiltInMessage').insertMany(builtInMessages)
+    await client.db(MONGODATABASE).collection(MAPCOLLECTION).insertMany(conversionMap)
+    await client.db(MONGODATABASE).collection(MESSAGESCOLLECTION).insertMany(builtInMessages)
     client.close()
 
     console.log('Successfully imported all data')

@@ -3,6 +3,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { Client, Collection, GatewayIntentBits } = require('discord.js')
 const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('./emojibot_files/constants')
 
 const client = new Client({ intents : [
     GatewayIntentBits.Guilds,
@@ -39,7 +40,7 @@ client.db.connect(async error => {
         console.error(error)
         client.db = undefined
     } else {
-        const mapCollection = client.db.db('ConversionMap').collection('Character')
+        const mapCollection = client.db.db(MONGODATABASE).collection(MAPCOLLECTION)
         const mapDocuments = await mapCollection.find({}).toArray()
 
         client.conversionMap = {}
@@ -47,7 +48,7 @@ client.db.connect(async error => {
 
         console.log('Successfully got the conversion map from the database')
 
-        const messagesCollection = client.db.db('ConversionMap').collection('BuiltInMessage')
+        const messagesCollection = client.db.db('ConversionMap').collection(MESSAGESCOLLECTION)
         const messageDocuments = await messagesCollection.find({}).toArray()
         
         client.builtInMessages = {}
