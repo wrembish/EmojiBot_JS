@@ -6,7 +6,7 @@
 module.exports = {
     MONGODATABASE : 'ConversionMap',
     MAPCOLLECTION : 'Character',
-    MESSAGESCOLLECTION : 'builtInMessage',
+    MESSAGESCOLLECTION : 'BuiltInMessage',
     EMBEDCOLOR : 'LuminousVividPink',
     emoji : '!emoji',
     DATABASEERRORMESSAGE : 'There was a problem connecting to the database. Please contact an administrator.',
