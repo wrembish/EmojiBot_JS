@@ -29,5 +29,22 @@ module.exports = {
         rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body : commands })
             .then(() => console.log('Successfully registered application commands!'))
             .catch(error => console.error('Error: ', error))
+    },
+
+    buildCronStr(timeStr) {
+        let output = ''
+        const timeOfDay = timeStr.endsWith('AM') ? 'AM' : 'PM'
+        const timeSplit = timeStr.substring(0, timeStr.length-2).split(':')
+
+        output += timeSplit[1] + ' '
+
+        if(timeSplit[0] == '12' && timeOfDay == 'AM') output += '0 '
+        else if(timeSplit[0] == '12' && timeOfDay == 'PM') output += '12 '
+        else if(timeOfDay ==  'PM') output += (12 + parseInt(timeSplit[0])).toString() + ' '
+        else output += timeSplit[0] + ' '
+
+        output += '* * *'
+
+        return output
     }
 }

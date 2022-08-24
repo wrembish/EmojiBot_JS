@@ -15,7 +15,8 @@
   "dependencies": {
     "discord.js": "^14.2.0",
     "dotenv": "^16.0.1",
-    "mongodb": "^4.9.0"
+    "mongodb": "^4.9.0",
+    "node-cron": "^3.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"

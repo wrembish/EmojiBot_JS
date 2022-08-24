@@ -10,4 +10,5 @@ module.exports = {
     EMBEDCOLOR : 'LuminousVividPink',
     emoji : '!emoji',
     DATABASEERRORMESSAGE : 'There was a problem connecting to the database. Please contact an administrator.',
+    COMMANDCHAR : '!!'
 }
