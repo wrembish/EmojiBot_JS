@@ -1,4 +1,11 @@
 # EmojiBot_JS
+https://github.com/wrembish/EmojiBot_JS
+
+This bot code started as a fun little C++ code to simply convert any message I wanted into a string of emojis that looked like
+the letters. From there, I first created a Python Discord bot(https://github.com/wrembish/discord-emoji-bot-2.0.0) to be able
+to have the bot automatically convert messages in discord that started with '!emoji', the same way my C++ code did. Then, I moved
+to writing the bot in JS instead of Python to get more practice writing JS / NodeJS code. From there, this bot has become a hobby
+of mine.
 
 ## Before Running
 * Setup a mongodb cluster
