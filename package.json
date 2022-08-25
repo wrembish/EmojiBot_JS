@@ -4,11 +4,11 @@
   "description": "Javascript version of my emojiBot",
   "main": "index.js",
   "scripts": {
-    "prestart": "node deploy-commands.js",
     "start": "node index.js",
     "predev": "node deploy-commands.js",
     "dev": "nodemon index.js",
-    "import": "node database-imports/import.js"
+    "import": "node database-imports/import.js",
+    "deploy-comms": "node deploy-commands.js"
   },
   "author": "William Rembish",
   "license": "ISC",
