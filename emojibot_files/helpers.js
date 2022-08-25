@@ -2,6 +2,12 @@ const { EmbedBuilder } = require('discord.js')
 const { EMBEDCOLOR } = require('./constants')
 
 module.exports = {
+    /**
+     * Converts the given string into a string of emojis
+     * @param {Object} map the conversion object that maps chars to emojis
+     * @param {string} str the string to convert
+     * @returns the converted string of emojis
+     */
     async convert(map, str) {
         let output = ''
         for(const c of str.split('')) {
@@ -11,6 +17,10 @@ module.exports = {
 
         return output
     },
+
+    /**
+     * Deploys the commands from the commands directory to the bot as application commands
+     */
     async deployCommands() {
         const fs = require('node:fs')
         const path = require('node:path')
@@ -34,6 +44,11 @@ module.exports = {
             .catch(error => console.error('Error: ', error))
     },
 
+    /**
+     * Converts a string in the format HH:MMAM / HH:MMPM to a cron string
+     * @param {string} timeStr the time string in the form of HH:MMAM / HH:MMPM
+     * @returns a cron string in the form of MM HH * * *
+     */
     buildCronStr(timeStr) {
         let output = ''
         const timeOfDay = timeStr.endsWith('AM') ? 'AM' : 'PM'
@@ -51,50 +66,83 @@ module.exports = {
         return output
     },
 
+    /**
+     * Creates an embed for discord messages with a random dog fact
+     * and a random dog image
+     * 
+     * Credit : http://dog-api.kinduff.com => random dog fact
+     * Credit : https://dog.ceo => random dog image
+     * 
+     * @returns an EmbedBuilder object with a random dog fact and image
+     */
     async getDogFactsEmbed() {
+        // Get a random dog fact from http://dog-api.kinduff.com
         let factResult
         await fetch('http://dog-api.kinduff.com/api/facts')
             .then(response => response.json())
             .then(data => factResult = data)
             .catch(error => console.error('Error: ', error))
 
+        // Get a random dog image from https://dog.ceo
         let imageResult
         await fetch('https://dog.ceo/api/breeds/image/random')
             .then(response => response.json())
             .then(data => imageResult = data)
             .catch(error => console.error('Error: ', error))
 
-        const messageEmbed = new EmbedBuilder()
+        // Build the embed to return
+        const resultEmbed = new EmbedBuilder()
             .setTitle('**__Daily Dog Fact__**')
             .setDescription(factResult.facts[0])
             .setColor(EMBEDCOLOR)
             .setImage(imageResult.message)
 
-        return messageEmbed
+        return resultEmbed
     },
 
+    /**
+     * Creates an embed for discord messages with a random cat fact
+     * and a random cat image
+     * 
+     * Credit : https://meowfacts.herokuapp.com/ => random cat fact
+     * Credit : https://cataas.com => random cat image
+     * 
+     * @returns an EmbedBuilder object with a random cat fact and image
+     */
     async getCatFactsEmbed() {
+        // Get a random cat fact from https://meowfacts.herokuapp.com/
         let factResult
         await fetch('https://meowfacts.herokuapp.com/')
             .then(response => response.json())
             .then(data => factResult = data)
             .catch(error => console.error('Error: ', error))
 
+        // Get a random cat image from the cats as a service api
         let imageResult
         await fetch('https://cataas.com/cat?json=true')
             .then(response => response.json())
             .then(data => imageResult = data)
             .catch(error => console.error('Error: ', error))
 
-        const messageEmbed = new EmbedBuilder()
+        // Build the embed to return
+        const resultEmbed = new EmbedBuilder()
             .setTitle('**__Daily Cat Fact__**')
             .setDescription(factResult.data[0])
             .setColor(EMBEDCOLOR)
             .setImage(`https://cataas.com${imageResult.url}`)
 
-        return messageEmbed
+        return resultEmbed
     },
 
+    /**
+     * Will remove the cron job (if it exists) that corresponds to
+     * the message channel and the jobName from the client list of 
+     * jobs as well as delete it from the MongoDB collection
+     * @param {Message} message The Discord Message object
+     * @param {Collection} collection The MongoDB Collection object
+     * @param {string} jobName The name of the job you wish to delete
+     * @returns true if a job is deleted, false otherwise
+     */
     async deleteCronJob(message, collection, jobName) {
         let index = undefined
         for (let i = 0; i < message.client.cronJobs.length; ++i) {

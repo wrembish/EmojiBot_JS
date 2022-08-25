@@ -8,6 +8,7 @@ module.exports = {
         .setName('update')
         .setDescription('Update Slash Commands'),
     async execute(interaction) {
+        // only let the set admin run this command
         if(interaction.user.id === process.env.ADMIN) {
             try {
                 const { deployCommands } = require('../emojibot_files/helpers')

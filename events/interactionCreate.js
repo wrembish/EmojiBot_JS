@@ -1,3 +1,5 @@
+const { INTERACTIONERRORMESSAGE } = require('../emojibot_files/constants.js')
+
 module.exports = {
     name : 'interactionCreate',
     async execute(interaction) {
@@ -10,7 +12,7 @@ module.exports = {
                 await command.execute(interaction)
             } catch(error) {
                 console.error('Error: ', error)
-                await interaction.reply({ content : 'There was an error while executing this command!', ephemeral : true })
+                await interaction.reply({ content : INTERACTIONERRORMESSAGE, ephemeral : true })
             }
         }
     },
