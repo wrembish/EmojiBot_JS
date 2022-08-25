@@ -4,11 +4,16 @@
  */
 
 module.exports = {
+    // MongoDB constants
     MONGODATABASE : 'ConversionMap',
     MAPCOLLECTION : 'Character',
     MESSAGESCOLLECTION : 'BuiltInMessage',
-    EMBEDCOLOR : 'LuminousVividPink',
-    emoji : '!emoji',
+    CRONCOLLECTION : 'CronJob',
+    // Command constants
+    COMMANDCHAR : '!!',
+    EMOJI: '!emoji',
+    // Error Message constants
     DATABASEERRORMESSAGE : 'There was a problem connecting to the database. Please contact an administrator.',
-    COMMANDCHAR : '!!'
+    // Other constants
+    EMBEDCOLOR : 'LuminousVividPink'
 }

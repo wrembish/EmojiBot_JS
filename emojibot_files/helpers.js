@@ -1,3 +1,6 @@
+const { EmbedBuilder } = require('discord.js')
+const { EMBEDCOLOR } = require('./constants')
+
 module.exports = {
     async convert(map, str) {
         let output = ''
@@ -40,11 +43,70 @@ module.exports = {
 
         if(timeSplit[0] == '12' && timeOfDay == 'AM') output += '0 '
         else if(timeSplit[0] == '12' && timeOfDay == 'PM') output += '12 '
-        else if(timeOfDay ==  'PM') output += (12 + parseInt(timeSplit[0])).toString() + ' '
+        else if(timeOfDay == 'PM') output += (12 + parseInt(timeSplit[0])).toString() + ' '
         else output += timeSplit[0] + ' '
 
         output += '* * *'
 
         return output
+    },
+
+    async getDogFactsEmbed() {
+        let factResult
+        await fetch('http://dog-api.kinduff.com/api/facts')
+            .then(response => response.json())
+            .then(data => factResult = data)
+            .catch(error => console.error('Error: ', error))
+
+        let imageResult
+        await fetch('https://dog.ceo/api/breeds/image/random')
+            .then(response => response.json())
+            .then(data => imageResult = data)
+            .catch(error => console.error('Error: ', error))
+
+        const messageEmbed = new EmbedBuilder()
+            .setTitle('**__Daily Dog Fact__**')
+            .setDescription(factResult.facts[0])
+            .setColor(EMBEDCOLOR)
+            .setImage(imageResult.message)
+
+        return messageEmbed
+    },
+
+    async getCatFactsEmbed() {
+        let factResult
+        await fetch('https://meowfacts.herokuapp.com/')
+            .then(response => response.json())
+            .then(data => factResult = data)
+            .catch(error => console.error('Error: ', error))
+
+        let imageResult
+        await fetch('https://cataas.com/cat?json=true')
+            .then(response => response.json())
+            .then(data => imageResult = data)
+            .catch(error => console.error('Error: ', error))
+
+        const messageEmbed = new EmbedBuilder()
+            .setTitle('**__Daily Cat Fact__**')
+            .setDescription(factResult.data[0])
+            .setColor(EMBEDCOLOR)
+            .setImage(`https://cataas.com${imageResult.url}`)
+
+        return messageEmbed
+    },
+
+    async deleteCronJob(message, collection, jobName) {
+        let index = undefined
+        for (let i = 0; i < message.client.cronJobs.length; ++i) {
+            const job = message.client.cronJobs[i]
+            if (job.channel === message.channelId && job.job === jobName) {
+                index = i
+                job.cronJob.stop()
+                await collection.deleteOne({ _id: job.id })
+                break
+            }
+        } if (index) message.client.cronJobs.splice(index, 1)
+
+        return index != undefined
     }
 }
