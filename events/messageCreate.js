@@ -13,7 +13,7 @@ module.exports = {
             const contentMessage = content.substring(EMOJI.length)
             if(contentMessage.length >= 1)  {
                 if(message.client.conversionMap) {
-                    const convertedStr = await convert(message.client.conversionMap, contentMessage)
+                    const convertedStr = convert(message.client.conversionMap, contentMessage)
                     await message.channel.send(convertedStr)
                 } else {    
                     await message.channel.send(DATABASEERRORMESSAGE)
@@ -33,14 +33,14 @@ module.exports = {
             }
         } else if(content === '69' || content.startsWith('69 ') || content.endsWith(' 69') || content.includes(' 69 ')) {
             if(message.client.conversionMap) {
-                const convertedStr = await convert(message.client.conversionMap, '69? nice')
+                const convertedStr = convert(message.client.conversionMap, '69? nice')
                 await message.channel.send(convertedStr)
             } else {    
                 await message.channel.send(DATABASEERRORMESSAGE)
             }
         } else if(content === '420' || content.startsWith('420 ') || content.endsWith(' 420') || content.includes(' 420 ')) {
             if(message.client.conversionMap) {
-                const convertedStr = await convert(message.client.conversionMap, '420? nice')
+                const convertedStr = convert(message.client.conversionMap, '420? nice')
                 await message.channel.send(convertedStr)
             } else {    
                 await message.channel.send(DATABASEERRORMESSAGE)

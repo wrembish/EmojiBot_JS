@@ -48,7 +48,7 @@ client.db.connect(async error => {
 
         console.log('Successfully got the conversion map from the database')
 
-        const messagesCollection = client.db.db('ConversionMap').collection(MESSAGESCOLLECTION)
+        const messagesCollection = client.db.db(MONGODATABASE).collection(MESSAGESCOLLECTION)
         const messageDocuments = await messagesCollection.find({}).toArray()
         
         client.builtInMessages = {}

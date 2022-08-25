@@ -8,7 +8,7 @@ module.exports = {
      * @param {string} str the string to convert
      * @returns the converted string of emojis
      */
-    async convert(map, str) {
+    convert(map, str) {
         let output = ''
         for(const c of str.split('')) {
             if(c === ' ') output += '     '
