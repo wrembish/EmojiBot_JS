@@ -36,3 +36,4 @@ of mine.
   * https://gist.github.com/thomasbnt/b6f455e2c7d743b796917fa3c205f812 has the named colors that are available listed
 * To use a different string to start commands with (instead of '!!'), change the variable COMMANDCHAR in contants.js
 * To change the command for converting to emojis, change the variable EMOJI in contants.js
+* tsconfig and the typescript dev-dependency are in case I or anyone else wants to generate .d.ts files for this bot
