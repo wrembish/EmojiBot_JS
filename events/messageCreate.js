@@ -1,5 +1,5 @@
 const cron = require('node-cron')
-const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE } = require('../utils/constants.js')
+const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, POINTSCOLLECTION } = require('../utils/constants.js')
 const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed } = require('../utils/helpers.js')
 
 module.exports = {
@@ -8,7 +8,11 @@ module.exports = {
         if(message.author.id === message.client.user.id) return
 
         const content = message.content
+        const userMentions = message.mentions.users
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                   Original EmojiBot Features                                   //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         if(content.startsWith(EMOJI)) {
             const contentMessage = content.substring(EMOJI.length)
             if(contentMessage.length >= 1)  {
@@ -51,9 +55,9 @@ module.exports = {
             } else {
                 await message.channel.send(DATABASEERRORMESSAGE)
             }
-        } 
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                          New Features                                          //
+        //                                        Cron Job Features                                       //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(content.startsWith(`${COMMANDCHAR}set channel dogfacts `)) {
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
@@ -122,6 +126,149 @@ module.exports = {
             
             if(cronDeleted) await message.channel.send('**Successfully removed this channel from recieving daily catfacts**')
             else await message.channel.send('**This channel isn\'t currently receiving daily catfacts**')
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                        Gambling Features                                       //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        else if(content.startsWith(`${COMMANDCHAR}gamble `) && content.split(' ').length === 2) {
+            const pointsToGamble = parseInt(content.split(' ')[1])
+            if (Number.isNaN(pointsToGamble)) return
+
+            const collection = message.client.db.db(MONGODATABASE).collection(POINTSCOLLECTION)
+            const documents = await collection.find({ UserId : message.author.id }).toArray()
+            const now = Date.now()
+
+            if(documents.length > 0) {
+                const NumberToWin = Math.floor(Math.random() * 4)
+                let points = parseInt(documents[0].Points) + Math.floor((((now - parseInt(documents[0].LastUpdate)) / 60000 ) / 5) * 10)
+                const update = { $set : {} }
+                if(pointsToGamble > points) {
+                    await message.channel.send(`**I'm sorry ${message.author}, you don't have enough points to make this gamble! :(**`)
+                } else if(Math.floor(Math.random() * 4) === NumberToWin) {
+                    points += pointsToGamble
+                    await message.channel.send(`**CONGRATULATIONS ${message.author}, YOU WIN!! You now have __${points}__ points!**`)
+                } else {
+                    points -= pointsToGamble
+                    await message.channel.send(`**Ohhh.. Better luck next time ${message.author}! You now have __${points}__ points.**`)
+                }
+                update.$set.Points = points.toString()
+                update.$set.LastUpdate = now.toString()
+                await collection.updateOne({ _id : documents[0]._id }, update)
+            } else if(pointsToGamble > 50000) {
+                await message.channel.send(`**I'm sorry ${message.author}, you don't have enough points to make this gamble! :(**`)
+                const insert = {
+                    UserId : message.author.id,
+                    Points : '50000',
+                    LastUpdate : now.toString()
+                }
+                await collection.insertOne(insert)
+            } else {
+                const NumberToWin = Math.floor(Math.random() * 4)
+                let points = 50000
+                if (Math.floor(Math.random() * 4) === NumberToWin) {
+                    points += pointsToGamble
+                    await message.channel.send(`**CONGRATULATIONS ${message.author}, YOU WIN!! You now have __${points}__ points!**`)
+                } else {
+                    points -= pointsToGamble
+                    await message.channel.send(`**Ohhh.. Better luck next time ${message.author}! You now have __${points}__ points.**`)
+                }
+                const insert = {
+                    userId : message.author.id,
+                    Points : points,
+                    LastUpdate : now
+                }
+                await collection.insertOne(insert)
+            }
+        } else if(content.startsWith(`${COMMANDCHAR}give `) && content.split(' ').length === 3 && userMentions.size === 1) {
+            let pointsToGive
+            let words = content.split(' ')
+            for(let i = 1; i < 3; ++i) {
+                if(!words[i].includes('@')) {
+                    pointsToGive = parseInt(words[i])
+                    break
+                }
+            }
+            if(!pointsToGive || Number.isNaN(pointsToGive)) return
+
+            const now = Date.now()
+            const collection = message.client.db.db(MONGODATABASE).collection(POINTSCOLLECTION)
+
+            const authorDocs = await collection.find({ UserId : message.author.id }).toArray()
+            let authorPoints = 50000
+            const authorUpdate = { $set : {} }
+            const authorInsert = {}
+
+            if(authorDocs.length > 0) {
+                authorUpdate.$set.LastUpdate = now.toString()
+                authorPoints = parseInt(authorDocs[0].Points) + Math.floor((((now - parseInt(authorDocs[0].LastUpdate)) / 60000 ) / 5) * 10)
+                if(authorPoints < pointsToGive) {
+                    await message.channel.send(
+                        `**I'm sorry ${message.author}, looks like you don't have enough points to give away!**\n`+
+                        `**You have __${authorPoints}__ points.**`
+                    )
+                    authorUpdate.$set.Points = authorPoints.toString()
+                    await collection.updateOne({ _id : message.author.id }, authorUpdate)
+                    return
+                }
+            } else {
+                authorInsert.UserId = message.author.id
+                authorInsert.LastUpdate = now.toString()
+                if(authorPoints < pointsToGive) {
+                    await message.channel.send(
+                        `**I'm sorry ${message.author}, looks like you don't have enough points to give away!**\n`+
+                        `**You have __${authorPoints}__ points.**`
+                    )
+                    authorInsert.Points = authorPoints.toString()
+                    await collection.insertOne(authorInsert)
+                    return
+                }
+            }
+
+            userMentions.each(async user => {
+                if(message.author.id === user.id || user.bot) {
+                    if(authorDocs.length > 0) {
+                        authorUpdate.$set.Points = authorPoints.toString()
+                        await collection.updateOne({ _id : authorDocs[0]._id }, authorUpdate)
+                    } else {
+                        authorInsert.Points = authorPoints.toString()
+                        await collection.insertOne(authorInsert)
+                    }
+                    if (user.bot) await message.channel.send(`**I'm sorry ${message.author}, you can't give points to a bot!**`)
+                    else await message.channel.send(`**${user} You can't give points to yourself, silly!**`)
+                    return
+                } else {
+                    authorPoints -= pointsToGive
+                    if(authorDocs.length > 0) {
+                        authorUpdate.$set.Points = authorPoints.toString()
+                        await collection.updateOne({ _id : authorDocs[0]._id }, authorUpdate)
+                    } else {
+                        authorInsert.Points = authorPoints.toString()
+                        await collection.insertOne(authorInsert)
+                    }
+                }
+                const userDocs = await collection.find({ UserId : user.id }).toArray()
+                let userPoints = pointsToGive
+                const userUpdate = { $set : {} }
+                const userInsert = {}
+
+                if(userDocs.length > 0) {
+                    userPoints += userDocs[0].Points + Math.floor((((now - parseInt(userDocs[0].LastUpdate)) / 60000 ) / 5) * 10)
+                    userUpdate.$set.Points = userPoints.toString()
+                    userUpdate.$set.LastUpdate = now.toString()
+                    await collection.updateOne({ _id : userDocs[0]._id }, userUpdate)
+                } else {
+                    userPoints += 50000
+                    userInsert.UserId = user.id
+                    userInsert.Points = userPoints.toString()
+                    userInsert.LastUpdate = now.toString()
+                    await collection.insertOne(userInsert)
+                }
+
+                await message.channel.send(
+                    `**${user}, you have been given __${pointsToGive}__ points by ${message.author.tag}!**\n`+
+                    `**You now have __${userPoints}__ points!**`
+                )
+            })
         }
     },
 }

@@ -9,6 +9,7 @@ module.exports = {
     MAPCOLLECTION : 'Conversion',
     MESSAGESCOLLECTION : 'BuiltInMessage',
     CRONCOLLECTION : 'CronJob',
+    POINTSCOLLECTION : 'Points',
     // Command constants
     COMMANDCHAR : '!!',
     EMOJI: '!emoji',
