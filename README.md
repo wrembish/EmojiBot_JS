@@ -7,7 +7,7 @@ to have the bot automatically convert messages in discord that started with '!em
 to writing the bot in JS instead of Python to get more practice writing JS / NodeJS code. From there, this bot has become a hobby
 of mine.
 
-## Before Running
+## Getting Started
 * Setup a mongodb cluster
   * In this cluster, set up a database called ConversionMap (or rename the variable MONGODATABASE in constants.js to whatever you name it)
   * In the ConversionMap database, setup collections : 
