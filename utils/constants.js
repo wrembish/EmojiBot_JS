@@ -1,6 +1,6 @@
 /**
  * File to store any constants that might be used across multiple files
- * Makes it easier to change across the entire program if a contant needs to be updated
+ * Makes it easier to change across the entire program if a constant needs to be updated
  */
 
 module.exports = {
