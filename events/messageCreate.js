@@ -1,5 +1,6 @@
 const cron = require('node-cron')
-const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, POINTSCOLLECTION } = require('../utils/constants.js')
+const { ObjectId } = require('mongodb')
+const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, POINTSCOLLECTION, BUGSCOLLECTION } = require('../utils/constants.js')
 const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed } = require('../utils/helpers.js')
 
 module.exports = {
@@ -269,6 +270,70 @@ module.exports = {
                     `**You now have __${userPoints}__ points!**`
                 )
             })
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                          Bug Reporting                                         //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        else if(content.startsWith(`${COMMANDCHAR}report bug : `) && content.substring(`${COMMANDCHAR}report bug : `.length).length > 0) {
+            const bugDescription = content.substring(`${COMMANDCHAR}report bug : `.length).trim()
+            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
+            await collection.insertOne({
+                ReportedBy : message.author.tag,
+                Description : bugDescription,
+                ReportTime : (new Date(Date.now())).toString(),
+                Status : 'Reported'
+            })
+
+            await message.channel.send(`**${message.author} Your bug has been reported successfully! Thank you for you help in making this bot the best it can be!**`)
+        } else if(content === `${COMMANDCHAR}List Bugs` && message.author.id === process.env.ADMIN) {
+            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
+            const bugs = await collection.find({}).toArray()
+
+            if(bugs.length === 0) {
+                await message.channel.send('**There are no bugs reported at this time!**')
+                return
+            }
+
+            let i = '1'
+            let bugsShown = 0
+            for(bug of bugs) {
+                if(bug.Status !== 'Closed') {
+                    await message.channel.send(
+                        `**__Bug #${i.padStart(4, '0')}__ : ${bug.Status}**\n` +
+                        `Reported by ${bug.ReportedBy} on ${bug.ReportTime}\n` +
+                        `*${bug.Description}*\n` +
+                        `Bug Id : ${bug._id}\n`
+                    )
+                    ++bugsShown
+                }
+                i = (parseInt(i) + 1).toString()
+            }
+
+            if(bugsShown === 0) {
+                await message.channel.send('**There are no open bugs reported at this time!**')
+            }
+        } else if(content.startsWith(`${COMMANDCHAR}Select Bug `) && content.substring(`${COMMANDCHAR}Select Bug `.length).length > 0) {
+            const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Select Bug `.length))
+            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
+            const bugs = await collection.find({ _id : bugId }).toArray()
+
+            if(bugs.length > 0 && bugs[0].Status === 'Reported') {
+                await collection.updateOne({ _id : bugId }, { $set : { Status : 'In Progress' } })
+                await message.channel.send('**Successfully set the bug\'s status to "In Progress"**')
+            } else {
+                await message.channel.send('**Couldn\'t find the bug you were trying to select, or it is already being worked on. Perhaps you mistyped the Bug Id?**')
+            }
+        } else if(content.startsWith(`${COMMANDCHAR}Close Bug `) && content.substring(`${COMMANDCHAR}Close Bug `.length).length > 0) {
+            const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Close Bug `.length))
+            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
+            const bugs = await collection.find({ _id : bugId }).toArray()
+
+            if(bugs.length > 0 && bugs[0].Status !== 'Closed') {
+                await collection.updateOne({ _id : bugId }, { $set : { Status : 'Closed' } })
+                await message.channel.send('**Bug was successfully closed!!**')
+            } else {
+                await message.channel.send('**This bug has already been closed!**')
+            }
         }
     },
 }

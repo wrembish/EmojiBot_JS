@@ -10,6 +10,7 @@ module.exports = {
     MESSAGESCOLLECTION : 'BuiltInMessage',
     CRONCOLLECTION : 'CronJob',
     POINTSCOLLECTION : 'Points',
+    BUGSCOLLECTION : 'Bugs',
     // Command constants
     COMMANDCHAR : '!!',
     EMOJI: '!emoji',
