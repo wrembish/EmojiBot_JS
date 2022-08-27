@@ -5,8 +5,8 @@
 
 module.exports = {
     // MongoDB constants
-    MONGODATABASE : 'ConversionMap',
-    MAPCOLLECTION : 'Character',
+    MONGODATABASE : 'EmojiBot',
+    MAPCOLLECTION : 'Conversion',
     MESSAGESCOLLECTION : 'BuiltInMessage',
     CRONCOLLECTION : 'CronJob',
     // Command constants

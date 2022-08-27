@@ -9,10 +9,10 @@ of mine.
 
 ## Getting Started
 * Setup a mongodb cluster
-  * In this cluster, set up a database called ConversionMap (or rename the variable MONGODATABASE in constants.js to whatever you name it)
-  * In the ConversionMap database, setup collections : 
+  * In this cluster, set up a database called EmojiBot (or rename the variable MONGODATABASE in constants.js to whatever you name it)
+  * In the EmojiBot database, setup collections : 
     * BuiltInMessage (or rename the variable MESSAGESCOLLECTION in constants.js to whatever you name it)
-    * Character (or rename the variable MAPCOLLECTION in constants.js to whatever you name it)
+    * Conversion (or rename the variable MAPCOLLECTION in constants.js to whatever you name it)
     * CronJob (or rename the variable CRONCOLLECTION in constants.js to whatever you name it)
 * Run the following command
   * npm run import
