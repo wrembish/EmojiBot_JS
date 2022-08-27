@@ -79,8 +79,8 @@ module.exports = {
                     cronJob : cronJob
                 })
 
-                if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to recieve a random dogfact daily at __${timeStr}__**`)
-                else await message.channel.send(`**Channel successfully set to recieve a random dogfact daily at __${timeStr}__**`)
+                if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a random dogfact daily at __${timeStr}__**`)
+                else await message.channel.send(`**Channel successfully set to receive a random dogfact daily at __${timeStr}__**`)
             }
         } else if(content === `${COMMANDCHAR}remove channel dogfacts`) {
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
@@ -113,8 +113,8 @@ module.exports = {
                     cronJob : cronJob
                 })
 
-                if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to recieve a random catfact daily at __${timeStr}__**`)
-                else await message.channel.send(`**Channel successfully set to recieve a random catfact daily at __${timeStr}__**`)
+                if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a random catfact daily at __${timeStr}__**`)
+                else await message.channel.send(`**Channel successfully set to receive a random catfact daily at __${timeStr}__**`)
             }
         } else if(content === `${COMMANDCHAR}remove channel catfacts`) {
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)

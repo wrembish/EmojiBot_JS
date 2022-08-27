@@ -23,7 +23,7 @@ module.exports = {
                 } else if(doc.JobName === 'catfacts') {
                     const messageEmbed = await getCatFactsEmbed()
                     console.log(messageEmbed)
-                    client.channels.cache.get(doc.ChannelId).send({ embeds : messageEmbed })
+                    client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
                 }
             })
             client.cronJobs.push({
