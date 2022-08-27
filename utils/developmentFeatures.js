@@ -8,7 +8,7 @@ module.exports = {
         '    - if the message contains "69" or "420"\n' +
         '    - if the message contains "/oof" or "/bigoof"\n' +
         '- Any of the listed slash commands\n' +
-        '- Schedulable messages : **\n' +
+        '- Schedulable messages : \n' +
         '    - "!!set channel <dogfacts/catfacts> Time(HH:MM<AM/PM>)"\n' +
         '    - "!!remove channel <dogfacts/catfacts>"\n' +
         '- Gambling : \n' +
