@@ -6,11 +6,14 @@ module.exports = {
     name : 'ready',
     once : true,
     async execute(client) {
-        // alert the console when the client is ready
+        // Alert the console when the client is ready
         console.log(`Ready! Logged in as ${client.user.tag}`)
 
-        // retrieve any cron jobs from the database and schedule them
-        // once the client is ready
+        // Set the bot's status
+        client.user.setActivity('with Emojis')
+
+        // Retrieve any cron jobs from the database and schedule them
+        // Once the client is ready
         const collection = client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
         const documents = await collection.find({}).toArray()
 
