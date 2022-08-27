@@ -285,7 +285,7 @@ module.exports = {
             })
 
             await message.channel.send(`**${message.author} Your bug has been reported successfully! Thank you for you help in making this bot the best it can be!**`)
-        } else if(content === `${COMMANDCHAR}List Bugs` && message.author.id === process.env.ADMIN) {
+        } else if(content === `${COMMANDCHAR}List Bugs` && process.env.ADMINS.split(',').includes(message.author.id)) {
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             const bugs = await collection.find({}).toArray()
 
@@ -312,7 +312,7 @@ module.exports = {
             if(bugsShown === 0) {
                 await message.channel.send('**There are no open bugs reported at this time!**')
             }
-        } else if(content.startsWith(`${COMMANDCHAR}Select Bug `) && content.substring(`${COMMANDCHAR}Select Bug `.length).length > 0) {
+        } else if(content.startsWith(`${COMMANDCHAR}Select Bug `) && process.env.ADMINS.split(',').includes(message.author.id) && content.substring(`${COMMANDCHAR}Select Bug `.length).length === 24) {
             const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Select Bug `.length))
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             const bugs = await collection.find({ _id : bugId }).toArray()
@@ -320,10 +320,12 @@ module.exports = {
             if(bugs.length > 0 && bugs[0].Status === 'Reported') {
                 await collection.updateOne({ _id : bugId }, { $set : { Status : 'In Progress' } })
                 await message.channel.send('**Successfully set the bug\'s status to "In Progress"**')
+            } else if(bugs.length > 0) {
+                await message.channel.send('**This bug is already being worked on!**')
             } else {
-                await message.channel.send('**Couldn\'t find the bug you were trying to select, or it is already being worked on. Perhaps you mistyped the Bug Id?**')
+                await message.channel.send('**Couldn\'t find the bug you were trying to select. Perhaps you mistyped the Bug Id?**')
             }
-        } else if(content.startsWith(`${COMMANDCHAR}Close Bug `) && content.substring(`${COMMANDCHAR}Close Bug `.length).length > 0) {
+        } else if(content.startsWith(`${COMMANDCHAR}Close Bug `) && process.env.ADMINS.split(',').includes(message.author.id) && content.substring(`${COMMANDCHAR}Close Bug `.length).length === 24) {
             const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Close Bug `.length))
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             const bugs = await collection.find({ _id : bugId }).toArray()
@@ -331,8 +333,10 @@ module.exports = {
             if(bugs.length > 0 && bugs[0].Status !== 'Closed') {
                 await collection.updateOne({ _id : bugId }, { $set : { Status : 'Closed' } })
                 await message.channel.send('**Bug was successfully closed!!**')
-            } else {
+            } else if(bugs.length > 0) {
                 await message.channel.send('**This bug has already been closed!**')
+            } else {
+                await message.channel.send('**Couln\'t find the bug you were trying to close. Perhaps you mistyped the Bug Id?**')
             }
         }
     },

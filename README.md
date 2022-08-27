@@ -14,6 +14,8 @@ of mine.
     * BuiltInMessage (or rename the variable MESSAGESCOLLECTION in constants.js to whatever you name it)
     * Conversion (or rename the variable MAPCOLLECTION in constants.js to whatever you name it)
     * CronJob (or rename the variable CRONCOLLECTION in constants.js to whatever you name it)
+    * Points (or rename the variable POINTSCOLLECTION in constants.js to whatever you name it)
+    * Bugs (or rename the variable BUGSCOLLECTION in constants.js to whatever you name it)
 * Run the following command
   * npm run import
 * Setup the mentioned Environment Variables

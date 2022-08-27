@@ -9,7 +9,7 @@ module.exports = {
         .setDescription('Update Slash Commands'),
     async execute(interaction) {
         // only let the set admin run this command
-        if(interaction.user.id === process.env.ADMIN) {
+        if(process.env.ADMINS.split(',').includes(interaction.user.id)) {
             try {
                 const { deployCommands } = require('../utils/helpers')
                 await deployCommands()
