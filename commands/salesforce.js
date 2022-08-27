@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const { DATABASEERRORMESSAGE } = require('../emojibot_files/constants')
+const { DATABASEERRORMESSAGE } = require('../utils/constants')
 
 module.exports = {
     data : new SlashCommandBuilder()

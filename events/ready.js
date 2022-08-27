@@ -1,6 +1,6 @@
 const cron = require('node-cron')
-const { getDogFactsEmbed, getCatFactsEmbed } = require("../emojibot_files/helpers")
-const { MONGODATABASE, CRONCOLLECTION } = require("../emojibot_files/constants")
+const { getDogFactsEmbed, getCatFactsEmbed } = require("../utils/helpers")
+const { MONGODATABASE, CRONCOLLECTION } = require("../utils/constants")
 
 module.exports = {
     name : 'ready',

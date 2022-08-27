@@ -310,7 +310,7 @@ const builtInMessages = [
 
 require('dotenv').config()
 const { MongoClient, ServerApiVersion } = require('mongodb')
-const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('../emojibot_files/constants')
+const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('../utils/constants')
 
 const client = new MongoClient(process.env.MONGODB_URL, { useNewUrlParser : true, useUnifiedTopology :true, serverApi  : ServerApiVersion.v1 })
 client.connect(async error => {

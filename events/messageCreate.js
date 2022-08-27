@@ -1,6 +1,6 @@
 const cron = require('node-cron')
-const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE } = require('../emojibot_files/constants.js')
-const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed } = require('../emojibot_files/helpers.js')
+const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE } = require('../utils/constants.js')
+const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed } = require('../utils/helpers.js')
 
 module.exports = {
     name : 'messageCreate',

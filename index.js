@@ -3,7 +3,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { Client, Collection, GatewayIntentBits } = require('discord.js')
 const { MongoClient, ServerApiVersion } = require('mongodb')
-const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('./emojibot_files/constants')
+const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('./utils/constants')
 
 const client = new Client({ intents : [
     GatewayIntentBits.Guilds,

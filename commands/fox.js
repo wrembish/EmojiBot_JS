@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
-const { EMBEDCOLOR } = require('../emojibot_files/constants.js')
+const { EMBEDCOLOR } = require('../utils/constants.js')
 
 module.exports = {
     data : new SlashCommandBuilder()

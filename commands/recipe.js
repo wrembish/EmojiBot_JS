@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
-const { EMBEDCOLOR } = require('../emojibot_files/constants')
+const { EMBEDCOLOR } = require('../utils/constants')
 
 // https://www.themealdb.com
 

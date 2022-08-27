@@ -1,4 +1,4 @@
-const { INTERACTIONERRORMESSAGE } = require('../emojibot_files/constants.js')
+const { INTERACTIONERRORMESSAGE } = require('../utils/constants.js')
 
 module.exports = {
     name : 'interactionCreate',

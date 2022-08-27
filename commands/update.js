@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, Collection } = require('discord.js')
 const fs = require('node:fs')
 const path = require('node:path')
-const { DATABASEERRORMESSAGE } = require('../emojibot_files/constants')
+const { DATABASEERRORMESSAGE } = require('../utils/constants')
 
 module.exports = {
     data : new SlashCommandBuilder()
@@ -11,7 +11,7 @@ module.exports = {
         // only let the set admin run this command
         if(interaction.user.id === process.env.ADMIN) {
             try {
-                const { deployCommands } = require('../emojibot_files/helpers')
+                const { deployCommands } = require('../utils/helpers')
                 await deployCommands()
 
                 interaction.client.commands = new Collection()
