@@ -25,7 +25,6 @@ module.exports = {
                     client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
                 } else if(doc.JobName === 'catfacts') {
                     const messageEmbed = await getCatFactsEmbed()
-                    console.log(messageEmbed)
                     client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
                 }
             })
