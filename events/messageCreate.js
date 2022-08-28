@@ -1,6 +1,6 @@
 const cron = require('node-cron')
 const { ObjectId } = require('mongodb')
-const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE } = require('../utils/constants.js')
+const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, DOGFACT, CATFACT } = require('../utils/constants.js')
 const { POINTSCOLLECTION, BUGSCOLLECTION, NEWCOMMAND } = require('../utils/constants.js')
 const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed, deployNewCommand } = require('../utils/helpers.js')
 
@@ -15,7 +15,7 @@ module.exports = {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                   Original EmojiBot Features                                   //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(content.startsWith(EMOJI)) {
+        if(content.toLowerCase().startsWith(EMOJI)) {
             const contentMessage = content.substring(EMOJI.length)
             if(contentMessage.length >= 1)  {
                 if(message.client.conversionMap) {
@@ -25,13 +25,13 @@ module.exports = {
                     await message.channel.send(DATABASEERRORMESSAGE)
                 }
             }
-        } else if(content.includes('/grit')) {
+        } else if(content.toLowerCase().includes('/grit')) {
             if(message.client.builtInMessages) {
                 await message.channel.send(message.client.builtInMessages.grit)
             } else {
                 await message.channel.send(DATABASEERRORMESSAGE)
             }
-        } else if(content.toUpperCase().includes('SUCK')) {
+        } else if(content.toLowerCase().includes('suck')) {
             if(message.client.builtInMessages) {
                 await message.channel.send(message.client.builtInMessages.succ)
             } else {
@@ -51,7 +51,7 @@ module.exports = {
             } else {    
                 await message.channel.send(DATABASEERRORMESSAGE)
             }
-        } else if(content.includes('/oof') || content.includes('/bigoof')) {
+        } else if(content.toLowerCase().includes('/oof') || content.toLowerCase().includes('/bigoof')) {
             if(message.client.builtInMessages) {
                 await message.channel.send(message.client.builtInMessages.big_oof)
             } else {
@@ -61,78 +61,88 @@ module.exports = {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                        Cron Job Features                                       //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(content.startsWith(`${COMMANDCHAR}set channel dogfacts `)) {
+        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}set channel ${DOGFACT} `)) {
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, 'dogfacts')
+            const cronDeleted = await deleteCronJob(message, collection, DOGFACT)
 
-            const timeStr = content.substring(`${COMMANDCHAR}set channel dogfacts `.length)
+            const timeStr = content.substring(`${COMMANDCHAR}set channel ${DOGFACT} `.length)
             if(timeStr != '' && (timeStr.endsWith('AM') || timeStr.endsWith('PM'))) {
                 const cronStr = buildCronStr(timeStr)
 
-                await collection.insertOne({ ChannelId : message.channelId, JobName : 'dogfacts', CronStr : cronStr })
-                const mongoJobId = await collection.find({ ChannelId : message.channelId, JobName : 'dogfacts'}).toArray()
+                await collection.insertOne({ ChannelId : message.channelId, JobName : DOGFACT, CronStr : cronStr })
+                const mongoJobId = await collection.find({ ChannelId : message.channelId, JobName : DOGFACT}).toArray()
 
-                const cronJob = cron.schedule(cronStr, async () => {
-                    const messageEmbed = await getDogFactsEmbed()
-                    await message.channel.send({ embeds : [messageEmbed] })
-                })
+                try {
+                    const cronJob = cron.schedule(cronStr, async () => {
+                        const messageEmbed = await getDogFactsEmbed()
+                        await message.channel.send({ embeds : [messageEmbed] })
+                    })
 
-                message.client.cronJobs.push({
-                    id      : mongoJobId[0]._id,
-                    channel : message.channelId,
-                    cronStr : cronStr,
-                    job     : 'dogfacts',
-                    cronJob : cronJob
-                })
+                    message.client.cronJobs.push({
+                        id      : mongoJobId[0]._id,
+                        channel : message.channelId,
+                        cronStr : cronStr,
+                        job     : DOGFACT,
+                        cronJob : cronJob
+                    })
 
-                if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a random dogfact daily at __${timeStr}__**`)
-                else await message.channel.send(`**Channel successfully set to receive a random dogfact daily at __${timeStr}__**`)
+                    if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a ${DOGFACT.substring(0, DOGFACT.length-1)} dogfact daily at __${timeStr}__**`)
+                    else await message.channel.send(`**Channel successfully set to receive a random ${DOGFACT.substring(0, DOGFACT.length-1)} daily at __${timeStr}__**`)
+                } catch(error) {
+                    console.error('Error: ', error)
+                    await message.channel.send(`There was a problem setting this channel to recieve daily ${DOGFACT}`)
+                }
             }
-        } else if(content === `${COMMANDCHAR}remove channel dogfacts`) {
+        } else if(content.toLowerCase() === `${COMMANDCHAR}remove channel ${DOGFACT}`) {
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, 'dogfacts')
+            const cronDeleted = await deleteCronJob(message, collection, DOGFACT)
             
-            if(cronDeleted) await message.channel.send('**Successfully removed this channel from recieving daily dogfacts**')
-            else await message.channel.send('**This channel isn\'t currently receiving daily dogfacts**')
+            if(cronDeleted) await message.channel.send(`**Successfully removed this channel from recieving daily ${DOGFACT}**`)
+            else await message.channel.send(`**This channel isn't currently receiving daily ${DOGFACT}**`)
         }
         
-        else if(content.startsWith(`${COMMANDCHAR}set channel catfacts `)) {
+        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}set channel ${CATFACT} `)) {
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, 'catfacts')
+            const cronDeleted = await deleteCronJob(message, collection, CATFACT)
 
-            const timeStr = content.substring(`${COMMANDCHAR}set channel catfacts `.length)
+            const timeStr = content.substring(`${COMMANDCHAR}set channel ${CATFACT} `.length)
             if(timeStr != '' && (timeStr.endsWith('AM') || timeStr.endsWith('PM'))) {
                 const cronStr = buildCronStr(timeStr)
 
-                await collection.insertOne({ ChannelId : message.channelId, JobName : 'catfacts', CronStr : cronStr })
-                const mongoJobId = await collection.find({ ChannelId : message.channelId, JobName : 'catfacts'}).toArray()
+                await collection.insertOne({ ChannelId : message.channelId, JobName : CATFACT, CronStr : cronStr })
+                const mongoJobId = await collection.find({ ChannelId : message.channelId, JobName : CATFACT}).toArray()
 
-                const cronJob = cron.schedule(cronStr, async () => {
-                    const messageEmbed = await getCatFactsEmbed()
-                    await message.channel.send({ embeds : [messageEmbed] })
-                })
-                message.client.cronJobs.push({
-                    id      : mongoJobId[0]._id,
-                    channel : message.channelId,
-                    cronStr : cronStr,
-                    job     : 'catfacts',
-                    cronJob : cronJob
-                })
+                try {
+                    const cronJob = cron.schedule(cronStr, async () => {
+                        const messageEmbed = await getCatFactsEmbed()
+                        await message.channel.send({ embeds : [messageEmbed] })
+                    })
+                    message.client.cronJobs.push({
+                        id      : mongoJobId[0]._id,
+                        channel : message.channelId,
+                        cronStr : cronStr,
+                        job     : CATFACT,
+                        cronJob : cronJob
+                    })
 
-                if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a random catfact daily at __${timeStr}__**`)
-                else await message.channel.send(`**Channel successfully set to receive a random catfact daily at __${timeStr}__**`)
+                    if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a random ${0, CATFACT.substring(CATFACT.length-1)} daily at __${timeStr}__**`)
+                    else await message.channel.send(`**Channel successfully set to receive a random ${CATFACT.substring(0, CATFACT.length-1)} daily at __${timeStr}__**`)
+                } catch(error) {
+                    console.error('Error: ', error)
+                    await message.channel.send(`There was a problem setting this channel to recieve daily ${CATFACT}`)
+                }
             }
-        } else if(content === `${COMMANDCHAR}remove channel catfacts`) {
+        } else if(content.toLowerCase() === `${COMMANDCHAR}remove channel ${CATFACT}`) {
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, 'catfacts')
+            const cronDeleted = await deleteCronJob(message, collection, CATFACT)
             
-            if(cronDeleted) await message.channel.send('**Successfully removed this channel from recieving daily catfacts**')
-            else await message.channel.send('**This channel isn\'t currently receiving daily catfacts**')
+            if(cronDeleted) await message.channel.send(`**Successfully removed this channel from recieving daily ${CATFACT}**`)
+            else await message.channel.send(`**This channel isn't currently receiving daily ${CATFACT}**`)
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                        Gambling Features                                       //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(content.startsWith(`${COMMANDCHAR}gamble `) && content.split(' ').length === 2) {
+        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}gamble `) && content.split(' ').length === 2) {
             const pointsToGamble = parseInt(content.split(' ')[1])
             if (Number.isNaN(pointsToGamble)) return
 
@@ -181,7 +191,7 @@ module.exports = {
                 }
                 await collection.insertOne(insert)
             }
-        } else if(content.startsWith(`${COMMANDCHAR}give `) && content.split(' ').length === 3 && userMentions.size === 1) {
+        } else if(content.toLowerCase().startsWith(`${COMMANDCHAR}give `) && content.split(' ').length === 3 && userMentions.size === 1) {
             let pointsToGive
             let words = content.split(' ')
             for(let i = 1; i < 3; ++i) {
@@ -275,8 +285,8 @@ module.exports = {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                          Bug Reporting                                         //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(content.startsWith(`${COMMANDCHAR}report bug : `) && content.substring(`${COMMANDCHAR}report bug : `.length).length > 0) {
-            const bugDescription = content.substring(`${COMMANDCHAR}report bug : `.length).trim()
+        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}report bug : `) && content.substring(`${COMMANDCHAR}report bug : `.length).length > 0) {
+            const bugDescription = content.toLowerCase().substring(`${COMMANDCHAR}report bug : `.length).trim()
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             await collection.insertOne({
                 ReportedBy : message.author.tag,
@@ -343,7 +353,7 @@ module.exports = {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                               POC                                              //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(content.startsWith(`${COMMANDCHAR}new command : `)) {
+        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}new command : `)) {
             const fs = require('node:fs')
             const path = require('node:path')
             try {

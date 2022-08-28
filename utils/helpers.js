@@ -73,20 +73,20 @@ module.exports = {
     },
 
     /**
-     * Converts a string in the format HH:MMAM / HH:MMPM to a cron string
-     * @param {string} timeStr the time string in the form of HH:MMAM / HH:MMPM
+     * Converts a string in the format HH:MM<AM/PM> to a cron string
+     * @param {string} timeStr the time string in the form of HH:MM<AM/PM>
      * @returns a cron string in the form of MM HH * * *
      */
     buildCronStr(timeStr) {
         let output = ''
-        const timeOfDay = timeStr.endsWith('AM') ? 'AM' : 'PM'
+        const isPM = timeStr.endsWith('PM')
         const timeSplit = timeStr.substring(0, timeStr.length-2).split(':')
 
         output += timeSplit[1] + ' '
 
-        if(timeSplit[0] == '12' && timeOfDay == 'AM') output += '0 '
-        else if(timeSplit[0] == '12' && timeOfDay == 'PM') output += '12 '
-        else if(timeOfDay == 'PM') output += (12 + parseInt(timeSplit[0])).toString() + ' '
+        if (timeSplit[0] == '12' && isPM) output += '12 '
+        else if (timeSplit[0] == '12') output += '0 '
+        else if (isPM) output += (12 + parseInt(timeSplit[0])).toString() + ' '
         else output += timeSplit[0] + ' '
 
         output += '* * *'
@@ -132,15 +132,15 @@ module.exports = {
      * Creates an embed for discord messages with a random cat fact
      * and a random cat image
      * 
-     * Credit : https://meowfacts.herokuapp.com/ => random cat fact
+     * Credit : https://catfact.ninja/fact?max_length=2000 => random cat fact
      * Credit : https://cataas.com => random cat image
      * 
      * @returns an EmbedBuilder object with a random cat fact and image
      */
     async getCatFactsEmbed() {
-        // Get a random cat fact from https://meowfacts.herokuapp.com/
+        // Get a random cat fact from https://catfact.ninja/fact?max_length=2000
         let factResult
-        await fetch('https://meowfacts.herokuapp.com/')
+        await fetch('https://catfact.ninja/fact?max_length=2000')
             .then(response => response.json())
             .then(data => factResult = data)
             .catch(error => console.error('Error: ', error))
@@ -155,7 +155,7 @@ module.exports = {
         // Build the embed to return
         const resultEmbed = new EmbedBuilder()
             .setTitle('**__Daily Cat Fact__**')
-            .setDescription(factResult.data[0])
+            .setDescription(factResult.fact)
             .setColor(EMBEDCOLOR)
             .setImage(`https://cataas.com${imageResult.url}`)
 

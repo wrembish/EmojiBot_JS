@@ -1,6 +1,6 @@
 const cron = require('node-cron')
 const { getDogFactsEmbed, getCatFactsEmbed } = require("../utils/helpers")
-const { MONGODATABASE, CRONCOLLECTION } = require("../utils/constants")
+const { MONGODATABASE, CRONCOLLECTION, DOGFACT, CATFACT } = require("../utils/constants")
 
 module.exports = {
     name : 'ready',
@@ -19,22 +19,26 @@ module.exports = {
 
         client.cronJobs = []
         for(const doc of documents) {
-            const cronJob = cron.schedule(doc.CronStr, async () => {
-                if(doc.JobName === 'dogfacts') {
-                    const messageEmbed = await getDogFactsEmbed()
-                    client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
-                } else if(doc.JobName === 'catfacts') {
-                    const messageEmbed = await getCatFactsEmbed()
-                    client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
-                }
-            })
-            client.cronJobs.push({
-                id      : doc._id,
-                channel : doc.ChannelId,
-                cronStr : doc.CronStr,
-                job     : doc.JobName,
-                cronJob : cronJob
-            })
+            try {
+                const cronJob = cron.schedule(doc.CronStr, async () => {
+                    if(doc.JobName === DOGFACT) {
+                        const messageEmbed = await getDogFactsEmbed()
+                        client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
+                    } else if(doc.JobName === CATFACT) {
+                        const messageEmbed = await getCatFactsEmbed()
+                        client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
+                    }
+                })
+                client.cronJobs.push({
+                    id      : doc._id,
+                    channel : doc.ChannelId,
+                    cronStr : doc.CronStr,
+                    job     : doc.JobName,
+                    cronJob : cronJob
+                })
+            } catch(error) {
+                console.error('Error: ', error)
+            }
         }
 
         console.log(`${client.cronJobs.length} Cron Jobs have been scheduled successfully!`)

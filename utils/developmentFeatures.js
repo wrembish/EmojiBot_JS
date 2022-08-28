@@ -1,4 +1,4 @@
-const { COMMANDCHAR, EMOJI, INVITEURL } = require('./constants.js')
+const { COMMANDCHAR, EMOJI, INVITEURL, DOGFACT, CATFACT } = require('./constants.js')
 
 module.exports = {
     FEATURESHEADER : '**__Features List__**',
@@ -11,8 +11,8 @@ module.exports = {
         '    - if the message contains "/oof" or "/bigoof"\n' +
         '- Any of the listed slash commands\n' +
         '- Schedulable messages : \n' +
-        `    - "${COMMANDCHAR}set channel <dogfacts/catfacts> Time(HH:MM<AM/PM>)"\n` +
-        `    - "${COMMANDCHAR}remove channel <dogfacts/catfacts>"\n` +
+        `    - "${COMMANDCHAR}set channel <${DOGFACT}/${CATFACT}> Time(HH:MM<AM/PM>)"\n` +
+        `    - "${COMMANDCHAR}remove channel <${DOGFACT}/${CATFACT}>"\n` +
         '- Gambling : \n' +
         `    - "${COMMANDCHAR}gamble <number>"\n` +
         `    - "${COMMANDCHAR}give <@mention> <number>"\n` +

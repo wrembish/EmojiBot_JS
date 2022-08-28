@@ -14,6 +14,9 @@ module.exports = {
     // Command constants
     COMMANDCHAR : '!!',
     EMOJI: '!emoji',
+    // Cron Job constants
+    DOGFACT : 'dogfacts',
+    CATFACT : 'catfacts',
     // Error Message constants
     DATABASEERRORMESSAGE : 'There was a problem connecting to the database. Please contact an administrator.',
     INTERACTIONERRORMESSAGE : 'There was an error while executing this command!',
