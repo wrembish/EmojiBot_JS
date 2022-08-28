@@ -1,7 +1,8 @@
 const cron = require('node-cron')
 const { ObjectId } = require('mongodb')
-const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, POINTSCOLLECTION, BUGSCOLLECTION } = require('../utils/constants.js')
-const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed } = require('../utils/helpers.js')
+const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE } = require('../utils/constants.js')
+const { POINTSCOLLECTION, BUGSCOLLECTION, NEWCOMMAND } = require('../utils/constants.js')
+const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed, deployNewCommand } = require('../utils/helpers.js')
 
 module.exports = {
     name : 'messageCreate',
@@ -337,6 +338,45 @@ module.exports = {
                 await message.channel.send('**This bug has already been closed!**')
             } else {
                 await message.channel.send('**Couln\'t find the bug you were trying to close. Perhaps you mistyped the Bug Id?**')
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                               POC                                              //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        else if(content.startsWith(`${COMMANDCHAR}new command : `)) {
+            const fs = require('node:fs')
+            const path = require('node:path')
+            try {
+                const newComm = JSON.parse(content.substring(`${COMMANDCHAR}new command : `.length))
+                if(newComm.name && newComm.description && newComm.reply) {
+                    if(newComm.name.split(' ').length > 1) newComm.name = newComm.name.split(' ').join('-')
+                    
+                    const newCommBody = NEWCOMMAND
+                        .replace('guildIdStr', message.guildId)
+                        .replace('nameStr', newComm.name.toLowerCase())
+                        .replace('descriptionStr', newComm.description)
+                        .replace('replyStr', newComm.reply)
+                    
+                    const rootDir = path.join(__dirname, '..', 'guildCommands')
+                    try { fs.mkdir(rootDir); console.log('guildCommands directory created!') } catch(error) {}
+
+                    const cmmndDir = path.join(rootDir, `${message.guildId}`)
+                    try { fs.mkdirSync(cmmndDir); console.log(`${message.guildId} directory created!`) } catch(error) {}
+
+                    const filePath = path.join(cmmndDir,`${newComm.name.toLowerCase()}.js`)
+                    await fs.writeFileSync(filePath, newCommBody)
+                    await message.channel.send('New Command Created!')
+
+                    const newCommand = require(filePath)
+
+                    await deployNewCommand(newCommand.guildId)
+                    message.client.guildCommands.set(newCommand.data.name, newCommand)
+                } else {
+                    await message.channel.send('Your new command was not in the proper format')
+                }
+            } catch(error) {
+                console.error('Error: ', error)
+                await message.channel.send('Your new command was not in the proper format')
             }
         }
     },

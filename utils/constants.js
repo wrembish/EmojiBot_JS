@@ -18,5 +18,18 @@ module.exports = {
     DATABASEERRORMESSAGE : 'There was a problem connecting to the database. Please contact an administrator.',
     INTERACTIONERRORMESSAGE : 'There was an error while executing this command!',
     // Other constants
-    EMBEDCOLOR : 'LuminousVividPink'
+    EMBEDCOLOR : 'LuminousVividPink',
+    INVITEURL : 'https://www.tinyurl.com/emojiBot',
+    // New Command constants
+    NEWCOMMAND :
+        'const { SlashCommandBuilder } = require(\'discord.js\')\n\n' +
+        'module.exports = {\n' +
+        `    guildId : 'guildIdStr',\n` +
+        '    data : new SlashCommandBuilder()\n' +
+        `        .setName('nameStr')\n` +
+        `        .setDescription('descriptionStr'),\n\n` +
+        '    async execute(interaction) {\n' +
+        `        await interaction.reply('replyStr')\n` +
+        '    }\n' +
+        '}'
 }

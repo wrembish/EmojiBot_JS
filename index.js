@@ -21,6 +21,16 @@ for(const file of commandFiles) {
     client.commands.set(command.data.name, command)
 }
 
+client.guildCommands = new Collection()
+const guildCommsPath = path.join(__dirname, 'guildCommands')
+const guildCommFiles = fs.readdirSync(guildCommsPath).filter(file => file.endsWith('.js'))
+
+for(const file of guildCommFiles) {
+    const filePath = path.join(guildCommsPath, file)
+    const command = require(filePath)
+    client.guildCommands.set(command.data.name, command)
+}
+
 const eventsPath = path.join(__dirname, 'events')
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
 

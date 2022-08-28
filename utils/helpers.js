@@ -11,8 +11,10 @@ module.exports = {
     convert(map, str) {
         let output = ''
         for(const c of str.split('')) {
+            const emojis = map[c.toUpperCase()]
             if(c === ' ') output += '     '
-            else output += map[c.toUpperCase()][Math.floor(Math.random() * map[c.toUpperCase()].length)] + ' '
+            else if (emojis) output += emojis[Math.floor(Math.random() * emojis.length)] + ' '
+            else output += ` ${c} `
         }
 
         return output
@@ -42,6 +44,32 @@ module.exports = {
         rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body : commands })
             .then(() => console.log('Successfully registered application commands!'))
             .catch(error => console.error('Error: ', error))
+    },
+
+    /**
+     * Deploys the new command to the guild it was created in
+     */
+     async deployNewCommand(guildId) {
+        const fs = require('node:fs')
+        const path = require('node:path')
+        const { REST } = require('discord.js')
+        const { Routes } = require('discord-api-types/v10')
+
+        const commands = []
+        const guildCommsPath = path.join(__dirname, '..', 'guildCommands', `${guildId}`)
+        const guildCommFiles = fs.readdirSync(guildCommsPath).filter(file => file.endsWith('.js'))
+
+        for(const file of guildCommFiles) {
+            const filePath = path.join(guildCommsPath, file)
+            const command = require(filePath)
+            if (command.guildId === guildId) commands.push(command.data.toJSON()) 
+        }
+
+        const rest = new REST({ version : '10' }).setToken(process.env.TOKEN)
+
+        await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, guildId), { body : commands })
+                .then(() => console.log(`Successfully registered commands for Guild Id ${guildId}!`))
+                .catch(error => console.error('Error: ', error))
     },
 
     /**

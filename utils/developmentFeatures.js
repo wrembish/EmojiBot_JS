@@ -1,9 +1,9 @@
-const { COMMANDCHAR, EMOJI } = require('./constants.js')
+const { COMMANDCHAR, EMOJI, INVITEURL } = require('./constants.js')
 
 module.exports = {
     FEATURESHEADER : '**__Features List__**',
-    FEATURESLIST : 
-        `\`\`\`- Convert Message to Emojis : "${EMOJI} <message>"\n` +
+    FEATURESLIST : '```' + 
+        `- Convert Message to Emojis : "${EMOJI} <message>"\n` +
         '- Some built in message responses : \n' +
         '    - if the message contains "/grit"\n' +
         '    - if the message contains the word "suck"\n' +
@@ -16,6 +16,10 @@ module.exports = {
         '- Gambling : \n' +
         `    - "${COMMANDCHAR}gamble <number>"\n` +
         `    - "${COMMANDCHAR}give <@mention> <number>"\n` +
-        `    - "${COMMANDCHAR}give <number> <@mention>"\`\`\``,
+        `    - "${COMMANDCHAR}give <number> <@mention>"\n` +
+        `- ${COMMANDCHAR}new command : {"name":"<command name>", "description":"<description>","reply":"<bot response>"}\n` +
+        '    - Will create a new command for your server' +
+        '```\n\n' +
+        `**To add me to your own server, you can use this link ${INVITEURL} **`,
     REPORTBUG : `** *To Report a bug, use "${COMMANDCHAR}report bug : <bug description>"* **`
 }

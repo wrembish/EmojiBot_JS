@@ -105,3 +105,6 @@ dist
 
 # EmojiBot Files
 package-lock.json
+
+# Ignore the guildCommands directory
+guildCommands

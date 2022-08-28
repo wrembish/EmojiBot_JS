@@ -14,6 +14,17 @@ module.exports = {
                 console.error('Error: ', error)
                 await interaction.reply({ content : INTERACTIONERRORMESSAGE, ephemeral : true })
             }
+        } else {
+            const guildCommand = interaction.client.guildCommands.get(interaction.commandName)
+
+            if(guildCommand) {
+                try {
+                    await guildCommand.execute(interaction)
+                } catch(error) {
+                    console.error('Error: ', error)
+                    await interaction.reply({ content : INTERACTIONERRORMESSAGE, ephemeral : true })
+                }
+            }
         }
     },
 }
