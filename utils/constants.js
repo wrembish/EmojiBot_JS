@@ -25,14 +25,14 @@ module.exports = {
     INVITEURL : 'https://www.tinyurl.com/emojiBot',
     // New Command constants
     NEWCOMMAND :
-        'const { SlashCommandBuilder } = require(\'discord.js\')\n\n' +
+        'const { SlashCommandBuilder } = require("discord.js")\n\n' +
         'module.exports = {\n' +
-        `    guildId : 'guildIdStr',\n` +
+        `    guildId : "guildIdStr",\n` +
         '    data : new SlashCommandBuilder()\n' +
-        `        .setName('nameStr')\n` +
-        `        .setDescription('descriptionStr'),\n\n` +
+        `        .setName("nameStr")\n` +
+        `        .setDescription("descriptionStr"),\n\n` +
         '    async execute(interaction) {\n' +
-        `        await interaction.reply('replyStr')\n` +
+        `        await interaction.reply("replyStr")\n` +
         '    }\n' +
         '}'
 }
