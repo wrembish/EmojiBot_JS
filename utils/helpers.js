@@ -132,13 +132,13 @@ module.exports = {
      * Creates an embed for discord messages with a random cat fact
      * and a random cat image
      * 
-     * Credit : https://catfact.ninja/fact?max_length=2000 => random cat fact
+     * Credit : https://catfact.ninja/facts => random cat fact
      * Credit : https://cataas.com => random cat image
      * 
      * @returns an EmbedBuilder object with a random cat fact and image
      */
     async getCatFactsEmbed() {
-        // Get a random cat fact from https://catfact.ninja/fact?max_length=2000
+        // Get a random cat fact from https://catfact.ninja/facts
         let factResult
         await fetch('https://catfact.ninja/fact?max_length=2000')
             .then(response => response.json())
