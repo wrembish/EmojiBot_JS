@@ -103,11 +103,7 @@ dist
 # TernJS port file
 .tern-port
 
-# EmojiBot Files
+# EmojiBot Ignores
 package-lock.json
-
-# Ignore the guildCommands directory
 guildCommands
-
-# Ignore nodemon.json
 nodemon.json
