@@ -1,6 +1,0 @@
-{
-    "ignore": [
-        "guildCommands",
-        "**/README.md"
-    ]
-}
