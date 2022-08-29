@@ -8,7 +8,8 @@ const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('./utils/co
 const client = new Client({ intents : [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.DirectMessages
 ]})
 
 client.commands = new Collection()
@@ -23,12 +24,17 @@ for(const file of commandFiles) {
 
 client.guildCommands = new Collection()
 const guildCommsPath = path.join(__dirname, 'guildCommands')
-const guildCommFiles = fs.readdirSync(guildCommsPath).filter(file => file.endsWith('.js'))
+const guilds = fs.readdirSync(guildCommsPath)
 
-for(const file of guildCommFiles) {
-    const filePath = path.join(guildCommsPath, file)
-    const command = require(filePath)
-    client.guildCommands.set(command.data.name, command)
+for(const guild of guilds) {
+    const guildPath = path.join(guildCommsPath, guild)
+    const guildFiles = fs.readdirSync(guildPath).filter(file => file.endsWith('.js'))
+
+    for(const file of guildFiles) {
+        const filePath = path.join(guildPath, file)
+        const command = require(filePath)
+        client.guildCommands.set(command.data.name, command)
+    }
 }
 
 const eventsPath = path.join(__dirname, 'events')

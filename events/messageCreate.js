@@ -353,14 +353,15 @@ module.exports = {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                               POC                                              //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}new command : `)) {
+        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}new command : `) && message.inGuild()) {
             const fs = require('node:fs')
             const path = require('node:path')
             try {
-                const newComm = JSON.parse(content.substring(`${COMMANDCHAR}new command : `.length))
+                const commStr = content.substring(`${COMMANDCHAR}new command : `.length).replaceAll('”', '"').replaceAll('“', '"')
+                const newComm = JSON.parse(commStr)
                 if(newComm.name && newComm.description && newComm.reply) {
                     if(newComm.name.split(' ').length > 1) newComm.name = newComm.name.split(' ').join('-')
-                    
+
                     const newCommBody = NEWCOMMAND
                         .replace('guildIdStr', message.guildId)
                         .replace('nameStr', newComm.name.toLowerCase())

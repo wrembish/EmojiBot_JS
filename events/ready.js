@@ -1,6 +1,6 @@
 const cron = require('node-cron')
 const { getDogFactsEmbed, getCatFactsEmbed } = require("../utils/helpers")
-const { MONGODATABASE, CRONCOLLECTION, DOGFACT, CATFACT } = require("../utils/constants")
+const { MONGODATABASE, CRONCOLLECTION, DOGFACT, CATFACT, DMCOLLECTION } = require("../utils/constants")
 
 module.exports = {
     name : 'ready',
@@ -42,5 +42,28 @@ module.exports = {
         }
 
         console.log(`${client.cronJobs.length} Cron Jobs have been scheduled successfully!`)
+
+        // Open DM channels with all ADMIN users
+        const ADMINS = process.env.ADMINS.split(',')
+        for(const adm of ADMINS) {
+            const ADMIN = await client.users.fetch(adm)
+            await ADMIN.createDM()
+        }
+
+        console.log('Successfully opened DMs with ADMIN users.')
+
+        const dmCollection = client.db.db(MONGODATABASE).collection(DMCOLLECTION)
+        const dmDocuments = await dmCollection.find({}).toArray()
+        let dmCount = 0
+
+        for(const doc of dmDocuments) {
+            if(!ADMINS.includes(doc.UserId) && doc.AllowDms) {
+                ++dmCount
+                const dm = await client.users.fetch(doc.UserId)
+                await dm.createDM()
+            }
+        }
+
+        console.log(`successfully created DMs with ${dmCount} users!`)
     },
 }

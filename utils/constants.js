@@ -11,6 +11,7 @@ module.exports = {
     CRONCOLLECTION : 'CronJob',
     POINTSCOLLECTION : 'Points',
     BUGSCOLLECTION : 'Bugs',
+    DMCOLLECTION : 'dms',
     // Command constants
     COMMANDCHAR : '!!',
     EMOJI: '!emoji',

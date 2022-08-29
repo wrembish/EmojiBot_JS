@@ -5,6 +5,10 @@ module.exports = {
         .setName('server')
         .setDescription('Replies with server info!'),
     async execute(interaction) {
-        await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`)
+        if (interaction.guild === null) {
+            await interaction.reply('**Sorry, this command can only be used from within a Server!**')
+        } else {
+            await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`)
+        }
     },
 }
