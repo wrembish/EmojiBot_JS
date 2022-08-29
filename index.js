@@ -37,6 +37,16 @@ for(const guild of guilds) {
     }
 }
 
+client.modalHandlers = new Collection()
+const modalHandlersPath = path.join(__dirname, 'modalHandlers')
+const modalHandlerFiles = fs.readdirSync(modalHandlersPath)
+
+for(const file of modalHandlerFiles) {
+    const filePath = path.join(modalHandlersPath, file)
+    const handler = require(filePath)
+    client.modalHandlers.set(handler.name, handler)
+}
+
 const eventsPath = path.join(__dirname, 'events')
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
 
