@@ -32,7 +32,8 @@ module.exports = {
         'wednesday' : 3, 'wed' : 3, '3' : 3,
         'thursday' : 4, 'thurs' : 4, '4' : 4,
         'friday' : 5, 'fri' : 5, '5' : 5,
-        'saturday' : 6, 'sat' : 6, '6' : 6
+        'saturday' : 6, 'sat' : 6, '6' : 6,
+        'everyday' : '*', 'every day' : '*', 'every' : '*', 'all' : '*', 'all days' : '*', '*' : '*'
     },
     // New Command constants
     NEWCOMMAND :
