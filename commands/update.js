@@ -11,9 +11,11 @@ module.exports = {
         // only let the set admin run this command
         if(process.env.ADMINS.split(',').includes(interaction.user.id)) {
             try {
+                // Attemp to deploy the commands
                 const { deployCommands } = require('../utils/helpers')
                 await deployCommands()
 
+                // Reset the slash commands tracked on the client
                 interaction.client.commands = new Collection()
 
                 const commandsPath = path.join(__dirname, '..', 'commands')
@@ -25,12 +27,14 @@ module.exports = {
                     interaction.client.commands.set(command.data.name, command)
                 }
 
+                // Notify the user that the update was successful
                 if(interaction.client.builtInMessages) {
                     await interaction.reply(interaction.client.builtInMessages.succ + '  cess')
                 } else {
                     await interaction.reply({ content : DATABASEERRORMESSAGE, ephemeral : true })
                 }
             } catch(error) {
+                // If there is an error, log it to the console and notify the user
                 console.error('Error: ', error)
                 await interaction.reply('There was an error when trying to update the commands')
             }

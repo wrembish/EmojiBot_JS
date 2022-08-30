@@ -1,11 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 const { EMBEDCOLOR } = require('../utils/constants.js')
 
+// https://randomfox.ca/floof/
+
 module.exports = {
     data : new SlashCommandBuilder()
         .setName('fox')
         .setDescription('Get a random fox picture'),
     async execute(interaction) {
+        // get a random image of a fox from the api at https://randomfox.ca/floof/
         let result
         await fetch('https://randomfox.ca/floof/')
             .then(response => response.json())

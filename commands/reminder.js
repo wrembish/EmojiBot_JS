@@ -6,6 +6,10 @@ module.exports = {
         .setDescription('Set a reminder with a custom message!'),
 
     async execute(interaction) {
+        // Show the user a modal where they can input 
+        //      what day of the week (or all) that they want the reminder for
+        //      what time on the given day of the week they want to be reminded
+        //      what message they want sent for the reminder
         const modal = new ModalBuilder()
             .setCustomId('reminder')
             .setTitle('Set a reminder for the current channel!')

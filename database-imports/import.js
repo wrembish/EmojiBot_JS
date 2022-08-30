@@ -312,6 +312,7 @@ require('dotenv').config()
 const { MongoClient, ServerApiVersion } = require('mongodb')
 const { MONGODATABASE, MAPCOLLECTION, MESSAGESCOLLECTION } = require('../utils/constants')
 
+// Connect to the MongDB database and insert the records required for the bot to run
 const client = new MongoClient(process.env.MONGODB_URL, { useNewUrlParser : true, useUnifiedTopology :true, serverApi  : ServerApiVersion.v1 })
 client.connect(async error => {
   if(!error) {

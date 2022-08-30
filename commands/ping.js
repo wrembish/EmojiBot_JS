@@ -5,6 +5,7 @@ module.exports = {
         .setName('ping')
         .setDescription('replies with Pong!'),
     async execute(interaction) {
+        // Generic "Hello World" type slash command
         await interaction.reply('Pong!')
     },
 }

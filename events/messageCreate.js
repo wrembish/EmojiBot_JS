@@ -16,6 +16,7 @@ module.exports = {
         //                                   Original EmojiBot Features                                   //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         if(content.toLowerCase().startsWith(EMOJI)) {
+            // Original convert emojis functionality. This is where the bot began
             const contentMessage = content.substring(EMOJI.length)
             if(contentMessage.length >= 1)  {
                 if(message.client.conversionMap) {
@@ -25,7 +26,9 @@ module.exports = {
                     await message.channel.send(DATABASEERRORMESSAGE)
                 }
             }
-        } else if(content.toLowerCase().includes('/grit')) {
+        }
+        // Fun little responses to stuff that were relevant at the time of initially creating the bot
+        else if(content.toLowerCase().includes('/grit')) {
             if(message.client.builtInMessages) {
                 await message.channel.send(message.client.builtInMessages.grit)
             } else {
@@ -62,6 +65,7 @@ module.exports = {
         //                                        Cron Job Features                                       //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(content.toLowerCase().startsWith(`${COMMANDCHAR}set channel ${DOGFACT} `)) {
+            // Schedule dog facts to the channel for the given time
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
             const cronDeleted = await deleteCronJob(message, collection, DOGFACT)
 
@@ -94,6 +98,7 @@ module.exports = {
                 }
             }
         } else if(content.toLowerCase() === `${COMMANDCHAR}remove channel ${DOGFACT}`) {
+            // Stop the scheduled cron job for the channel for receiving dog facts
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
             const cronDeleted = await deleteCronJob(message, collection, DOGFACT)
             
@@ -102,6 +107,7 @@ module.exports = {
         }
         
         else if(content.toLowerCase().startsWith(`${COMMANDCHAR}set channel ${CATFACT} `)) {
+            // Schedule cat facts to the channel for the given time
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
             const cronDeleted = await deleteCronJob(message, collection, CATFACT)
 
@@ -133,6 +139,7 @@ module.exports = {
                 }
             }
         } else if(content.toLowerCase() === `${COMMANDCHAR}remove channel ${CATFACT}`) {
+            // Stop the scheduled cron job for the channel for receiving cat facts
             const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
             const cronDeleted = await deleteCronJob(message, collection, CATFACT)
             
@@ -143,6 +150,8 @@ module.exports = {
         //                                        Gambling Features                                       //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(content.toLowerCase().startsWith(`${COMMANDCHAR}gamble `) && content.split(' ').length === 2) {
+            // Allow the user to gamble their points if they have enough for what they wager
+            // Currently set to be about a 1 in 4 chance of winning
             const pointsToGamble = parseInt(content.split(' ')[1])
             if (Number.isNaN(pointsToGamble)) return
 
@@ -194,6 +203,7 @@ module.exports = {
                 await collection.insertOne(insert)
             }
         } else if(content.toLowerCase().startsWith(`${COMMANDCHAR}give `) && content.split(' ').length === 3 && userMentions.size === 1) {
+            // Allow users to transfer their points to other users, if they have enough
             let pointsToGive
             let words = content.split(' ')
             for(let i = 1; i < 3; ++i) {
@@ -289,6 +299,7 @@ module.exports = {
                 )
             })
         }else if(content.toLowerCase().startsWith(`${COMMANDCHAR}adm give `) && content.split(' ').length === 4 && userMentions.size === 1 && process.env.ADMINS.split(',').includes(message.author.id)) {
+            // Allows Admins to give people free points
             let pointsToGive
             let words = content.split(' ')
             for(let i = 2; i < 4; ++i) {
@@ -303,6 +314,10 @@ module.exports = {
             const collection = message.client.db.db(MONGODATABASE).collection(POINTSCOLLECTION)
 
             userMentions.each(async user => {
+                if(user.bot) {
+                    await message.channel.send(`**I'm sorry ${message.author}, you can't give points to a bot!**`)
+                    return
+                }
                 const userDocs = await collection.find({ UserId : user.id }).toArray()
                 let userPoints = pointsToGive
                 const userUpdate = { $set : {} }
@@ -333,7 +348,8 @@ module.exports = {
         //                                          Bug Reporting                                         //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(content.toLowerCase().startsWith(`${COMMANDCHAR}report bug : `) && content.substring(`${COMMANDCHAR}report bug : `.length).length > 0) {
-            const bugDescription = content.toLowerCase().substring(`${COMMANDCHAR}report bug : `.length).trim()
+            // Allows users to report bugs that are tracked in MongoDB
+            const bugDescription = content.substring(`${COMMANDCHAR}report bug : `.length).trim()
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             await collection.insertOne({
                 ReportedBy : message.author.tag,
@@ -344,6 +360,7 @@ module.exports = {
 
             await message.channel.send(`**${message.author} Your bug has been reported successfully! Thank you for you help in making this bot the best it can be!**`)
         } else if(content === `${COMMANDCHAR}List Bugs` && process.env.ADMINS.split(',').includes(message.author.id)) {
+            // Allows Admins to list out all non closed bugs
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             const bugs = await collection.find({}).toArray()
 
@@ -371,6 +388,7 @@ module.exports = {
                 await message.channel.send('**There are no open bugs reported at this time!**')
             }
         } else if(content.startsWith(`${COMMANDCHAR}Select Bug `) && process.env.ADMINS.split(',').includes(message.author.id) && content.substring(`${COMMANDCHAR}Select Bug `.length).length === 24) {
+            // Allows Admins to Select a Bug by ID and automatically set it to In Progress Status
             const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Select Bug `.length))
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             const bugs = await collection.find({ _id : bugId }).toArray()
@@ -384,6 +402,7 @@ module.exports = {
                 await message.channel.send('**Couldn\'t find the bug you were trying to select. Perhaps you mistyped the Bug Id?**')
             }
         } else if(content.startsWith(`${COMMANDCHAR}Close Bug `) && process.env.ADMINS.split(',').includes(message.author.id) && content.substring(`${COMMANDCHAR}Close Bug `.length).length === 24) {
+            // Allows Admins to quickly close a Bug by ID
             const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Close Bug `.length))
             const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
             const bugs = await collection.find({ _id : bugId }).toArray()
@@ -398,9 +417,10 @@ module.exports = {
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                               POC                                              //
+        //                                          Create Command                                        //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(content.toLowerCase().startsWith(`${COMMANDCHAR}new command : `) && message.inGuild()) {
+            // Allows users to create simple set response commands
             const fs = require('node:fs')
             const path = require('node:path')
             try {

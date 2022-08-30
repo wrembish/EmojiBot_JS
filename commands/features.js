@@ -8,6 +8,7 @@ module.exports = {
         .setDescription('Get this bots list of available features!'),
 
     async execute(interaction) {
+        // List out the features of the bot
         const replyEmbed = new EmbedBuilder()
             .setColor(EMBEDCOLOR)
             .setTitle(FEATURESHEADER)

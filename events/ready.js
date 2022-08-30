@@ -54,6 +54,8 @@ module.exports = {
 
         console.log('Successfully opened DMs with ADMIN users.')
 
+        // Get the list of Users that have Opened their DMs to the bot
+        // And open DM channels with them
         const dmCollection = client.db.db(MONGODATABASE).collection(DMCOLLECTION)
         const dmDocuments = await dmCollection.find({}).toArray()
         let dmCount = 0

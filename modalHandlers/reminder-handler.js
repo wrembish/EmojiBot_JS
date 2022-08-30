@@ -5,6 +5,8 @@ const { buildWeeklyCronStr } = require('../utils/helpers')
 module.exports = {
     name : 'reminder',
     async execute(interaction) {
+        // Handler for the /reminder command Modal Submit interaction
+        // Will schedule a cron job for the given Day, Time, and with the given message
         const collection = interaction.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
         const cronStr = buildWeeklyCronStr(
             interaction.fields.getTextInputValue('reminder-weekday').toLowerCase(),

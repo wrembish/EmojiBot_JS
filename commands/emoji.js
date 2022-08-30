@@ -6,6 +6,7 @@ module.exports = {
         .setDescription('!emoji as a slash command! :)'),
 
     async execute(interaction) {
+        // Send a moda to get the input string to convert to emojis
         const modal = new ModalBuilder()
             .setCustomId('emoji-convert')
             .setTitle('!emoji as a slash command :)')

@@ -1,6 +1,7 @@
 const { COMMANDCHAR, EMOJI, INVITEURL, DOGFACT, CATFACT } = require('./constants.js')
 
 module.exports = {
+    // Some constants for quickly updating the Features List that is returned in the /features command
     FEATURESHEADER : '**__Features List__**',
     FEATURESLIST : '```' + 
         `- Convert Message to Emojis : "${EMOJI} <message>"\n` +
