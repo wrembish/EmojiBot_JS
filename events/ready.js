@@ -1,6 +1,6 @@
 const cron = require('node-cron')
 const { getDogFactsEmbed, getCatFactsEmbed } = require("../utils/helpers")
-const { MONGODATABASE, CRONCOLLECTION, DOGFACT, CATFACT, DMCOLLECTION } = require("../utils/constants")
+const { MONGODATABASE, CRONCOLLECTION, DOGFACT, CATFACT, DMCOLLECTION, REMINDER } = require("../utils/constants")
 
 module.exports = {
     name : 'ready',
@@ -23,10 +23,12 @@ module.exports = {
                 const cronJob = cron.schedule(doc.CronStr, async () => {
                     if(doc.JobName === DOGFACT) {
                         const messageEmbed = await getDogFactsEmbed()
-                        client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
+                        await client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
                     } else if(doc.JobName === CATFACT) {
                         const messageEmbed = await getCatFactsEmbed()
-                        client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
+                        await client.channels.cache.get(doc.ChannelId).send({ embeds : [messageEmbed] })
+                    } else if(doc.JobName === REMINDER) {
+                        await client.channels.cache.get(doc.ChannelId).send(doc.Message)
                     }
                 })
                 client.cronJobs.push({

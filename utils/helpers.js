@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js')
-const { EMBEDCOLOR } = require('./constants')
+const { EMBEDCOLOR, WEEKDAYS } = require('./constants')
 
 module.exports = {
     /**
@@ -84,12 +84,35 @@ module.exports = {
 
         output += timeSplit[1] + ' '
 
-        if (timeSplit[0] == '12' && isPM) output += '12 '
-        else if (timeSplit[0] == '12') output += '0 '
+        if (timeSplit[0] === '12' && isPM) output += '12 '
+        else if (timeSplit[0] === '12') output += '0 '
         else if (isPM) output += (12 + parseInt(timeSplit[0])).toString() + ' '
         else output += timeSplit[0] + ' '
 
         output += '* * *'
+
+        return output
+    },
+
+    /**
+     * Converts a given weekday and time string in the format of HH:MM<AM/PM> to a cron string
+     * @param {string} weekday the day of the week
+     * @param {string} timeStr the time string in the form of HH:MM<AM/PM>
+     * @returns a cron string in the form of MM HH ? * WD
+     */
+    buildWeeklyCronStr(weekday, timeStr) {
+        let output = ''
+        const isPM = timeStr.endsWith('PM')
+        const timeSplit = timeStr.substring(0, timeStr.length-2).split(':')
+
+        output += timeSplit[1] + ' '
+
+        if (timeSplit[0] === '12' && isPM) output += '12 '
+        else if (timeSplit[0] === '12') output += '0 '
+        else if (isPM) output += (12 + parseInt(timeSplit[0])).toString() + ' '
+        else output += timeSplit[0] + ' '
+
+        output += '* * ' + WEEKDAYS[weekday]
 
         return output
     },
