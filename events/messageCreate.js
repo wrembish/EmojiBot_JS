@@ -1,7 +1,7 @@
 const cron = require('node-cron')
 const { ObjectId } = require('mongodb')
-const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, DOGFACT, CATFACT } = require('../utils/constants.js')
-const { POINTSCOLLECTION, BUGSCOLLECTION, NEWCOMMAND } = require('../utils/constants.js')
+const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, DOGFACT } = require('../utils/constants.js')
+const { POINTSCOLLECTION, BUGSCOLLECTION, NEWCOMMAND, CATFACT, SUGGESTCOLLECTION } = require('../utils/constants.js')
 const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed, deployNewCommand } = require('../utils/helpers.js')
 
 module.exports = {
@@ -456,6 +456,60 @@ module.exports = {
                 console.error('Error: ', error)
                 await message.channel.send('Your new command was not in the proper format')
             }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                       Manage Suggestions                                       //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        else if(process.env.ADMINS.split(',').includes(message.author.id) && content === `${COMMANDCHAR}List Suggestions`) {
+            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
+            const documents = await collection.find({}).toArray()
+
+            for(const doc of documents) {
+                if(doc.Status === 'Submitted') {
+                    await message.channel.send(
+                        '```{\n' +
+                        `    Suggestor : ${doc.User},\n` +
+                        `    Suggestion : ${doc.Suggestion},\n` +
+                        `    Status : ${doc.Status},\n` +
+                        `    Suggestion Id: ${doc._id}\n` +
+                        '}```'
+                    )
+                }
+            }
+
+            for(const doc of documents) {
+                if(doc.Status === 'Accepted') {
+                    await message.channel.send(
+                        '```{\n' +
+                        `    Suggestor : ${doc.User},\n` +
+                        `    Suggestion : ${doc.Suggestion},\n` +
+                        `    Status : ${doc.Status},\n` +
+                        `    Suggestion Id: ${doc._id}\n` +
+                        '}```'
+                    )
+                }
+            }
+        } else if(process.env.ADMINS.split(',').includes(message.author.id) && content.startsWith(`${COMMANDCHAR}Accept Suggestion `) && content.substring(`${COMMANDCHAR}Accept Suggestion `.length).length === 24) {
+            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
+            await collection.update(
+                { _id : new ObjectId(content.substring(`${COMMANDCHAR}Accept Suggestion `.length)) },
+                { $set : { Status : 'Accepted' } }
+            )
+            await message.channel.send('**Successfully updated the suggestion Status to "Accepted"!**')
+        } else if(process.env.ADMINS.split(',').includes(message.author.id) && content.startsWith(`${COMMANDCHAR}Reject Suggestion `) && content.substring(`${COMMANDCHAR}Reject Suggestion `.length).length === 24) {
+            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
+            await collection.update(
+                { _id : new ObjectId(content.substring(`${COMMANDCHAR}Reject Suggestion `.length)) },
+                { $set : { Status : 'Rejected' } }
+            )
+            await message.channel.send('**Successfully updated the suggestion Status to "Rejected"!**')
+        } else if(process.env.ADMINS.split(',').includes(message.author.id) && content.startsWith(`${COMMANDCHAR}Implement Suggestion `) && content.substring(`${COMMANDCHAR}Implement Suggestion `.length).length === 24) {
+            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
+            await collection.update(
+                { _id : new ObjectId(content.substring(`${COMMANDCHAR}Implement Suggestion `.length)) },
+                { $set : { Status : 'Implemented' } }
+            )
+            await message.channel.send('**Successfully updated the suggestion Status to "Implemented"!**')
         }
     },
 }

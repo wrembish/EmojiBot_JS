@@ -22,5 +22,6 @@ module.exports = {
         '    - Will create a new command for your server' +
         '```\n\n' +
         `**To add me to your own server, you can use this link ${INVITEURL} **`,
-    REPORTBUG : `** *To Report a bug, use "${COMMANDCHAR}report bug : <bug description>"* **`
+    REPORTBUG : `** *To Report a bug, use "${COMMANDCHAR}report bug : <bug description>"* **\n` +
+                `** *To Suggest new Features use /suggest-feature !* **`
 }

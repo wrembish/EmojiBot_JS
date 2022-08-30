@@ -12,6 +12,7 @@ module.exports = {
     POINTSCOLLECTION : 'Points',
     BUGSCOLLECTION : 'Bugs',
     DMCOLLECTION : 'dms',
+    SUGGESTCOLLECTION : 'Suggestion',
     // Command constants
     COMMANDCHAR : '!!',
     EMOJI: '!emoji',
