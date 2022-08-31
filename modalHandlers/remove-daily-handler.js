@@ -16,7 +16,7 @@ module.exports = {
         const collection = interaction.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
         const cronDeleted = await deleteCronJob(interaction, collection, job)
         
-        if (cronDeleted) await interaction.reply(`**Successfully removed this channel from recieving daily ${DOGFACT}**`)
-        else await interaction.reply(`**This channel isn't currently receiving daily ${DOGFACT}**`)
+        if (cronDeleted) await interaction.reply(`**Successfully removed this channel from recieving daily ${job}**`)
+        else await interaction.reply(`**This channel isn't currently receiving daily ${job}**`)
     }
 }
