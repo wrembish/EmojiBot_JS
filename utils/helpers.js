@@ -189,22 +189,22 @@ module.exports = {
      * Will remove the cron job (if it exists) that corresponds to
      * the message channel and the jobName from the client list of 
      * jobs as well as delete it from the MongoDB collection
-     * @param {Message} message The Discord Message object
+     * @param {Message} element The Discord Message / Interaction object
      * @param {Collection} collection The MongoDB Collection object
      * @param {string} jobName The name of the job you wish to delete
      * @returns true if a job is deleted, false otherwise
      */
-    async deleteCronJob(message, collection, jobName) {
+    async deleteCronJob(element, collection, jobName) {
         let index = undefined
-        for (let i = 0; i < message.client.cronJobs.length; ++i) {
-            const job = message.client.cronJobs[i]
-            if (job.channel === message.channelId && job.job === jobName) {
+        for (let i = 0; i < element.client.cronJobs.length; ++i) {
+            const job = element.client.cronJobs[i]
+            if (job.channel === element.channel.id && job.job === jobName) {
                 index = i
                 job.cronJob.stop()
                 await collection.deleteOne({ _id: job.id })
                 break
             }
-        } if (index) message.client.cronJobs.splice(index, 1)
+        } if (index) element.client.cronJobs.splice(index, 1)
 
         return index != undefined
     }

@@ -1,7 +1,6 @@
 const cron = require('node-cron')
-const { ObjectId } = require('mongodb')
-const { COMMANDCHAR, CRONCOLLECTION, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, DOGFACT } = require('../utils/constants.js')
-const { POINTSCOLLECTION, BUGSCOLLECTION, NEWCOMMAND, CATFACT, SUGGESTCOLLECTION } = require('../utils/constants.js')
+const { COMMANDCHAR, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE } = require('../utils/constants.js')
+const { POINTSCOLLECTION, NEWCOMMAND } = require('../utils/constants.js')
 const { buildCronStr, convert, deleteCronJob, getDogFactsEmbed, getCatFactsEmbed, deployNewCommand } = require('../utils/helpers.js')
 
 module.exports = {
@@ -60,91 +59,6 @@ module.exports = {
             } else {
                 await message.channel.send(DATABASEERRORMESSAGE)
             }
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                        Cron Job Features                                       //
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}set channel ${DOGFACT} `)) {
-            // Schedule dog facts to the channel for the given time
-            const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, DOGFACT)
-
-            const timeStr = content.substring(`${COMMANDCHAR}set channel ${DOGFACT} `.length)
-            if(timeStr != '' && (timeStr.endsWith('AM') || timeStr.endsWith('PM'))) {
-                const cronStr = buildCronStr(timeStr)
-
-                await collection.insertOne({ ChannelId : message.channelId, JobName : DOGFACT, CronStr : cronStr })
-                const mongoJobId = await collection.find({ ChannelId : message.channelId, JobName : DOGFACT}).toArray()
-
-                try {
-                    const cronJob = cron.schedule(cronStr, async () => {
-                        const messageEmbed = await getDogFactsEmbed()
-                        await message.channel.send({ embeds : [messageEmbed] })
-                    })
-
-                    message.client.cronJobs.push({
-                        id      : mongoJobId[0]._id,
-                        channel : message.channelId,
-                        cronStr : cronStr,
-                        job     : DOGFACT,
-                        cronJob : cronJob
-                    })
-
-                    if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a ${DOGFACT.substring(0, DOGFACT.length-1)} dogfact daily at __${timeStr}__**`)
-                    else await message.channel.send(`**Channel successfully set to receive a random ${DOGFACT.substring(0, DOGFACT.length-1)} daily at __${timeStr}__**`)
-                } catch(error) {
-                    console.error('Error: ', error)
-                    await message.channel.send(`There was a problem setting this channel to recieve daily ${DOGFACT}`)
-                }
-            }
-        } else if(content.toLowerCase() === `${COMMANDCHAR}remove channel ${DOGFACT}`) {
-            // Stop the scheduled cron job for the channel for receiving dog facts
-            const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, DOGFACT)
-            
-            if(cronDeleted) await message.channel.send(`**Successfully removed this channel from recieving daily ${DOGFACT}**`)
-            else await message.channel.send(`**This channel isn't currently receiving daily ${DOGFACT}**`)
-        }
-        
-        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}set channel ${CATFACT} `)) {
-            // Schedule cat facts to the channel for the given time
-            const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, CATFACT)
-
-            const timeStr = content.substring(`${COMMANDCHAR}set channel ${CATFACT} `.length)
-            if(timeStr != '' && (timeStr.endsWith('AM') || timeStr.endsWith('PM'))) {
-                const cronStr = buildCronStr(timeStr)
-
-                await collection.insertOne({ ChannelId : message.channelId, JobName : CATFACT, CronStr : cronStr })
-                const mongoJobId = await collection.find({ ChannelId : message.channelId, JobName : CATFACT}).toArray()
-
-                try {
-                    const cronJob = cron.schedule(cronStr, async () => {
-                        const messageEmbed = await getCatFactsEmbed()
-                        await message.channel.send({ embeds : [messageEmbed] })
-                    })
-                    message.client.cronJobs.push({
-                        id      : mongoJobId[0]._id,
-                        channel : message.channelId,
-                        cronStr : cronStr,
-                        job     : CATFACT,
-                        cronJob : cronJob
-                    })
-
-                    if(cronDeleted) await message.channel.send(`**Channel successfully rescheduled to receive a random ${0, CATFACT.substring(CATFACT.length-1)} daily at __${timeStr}__**`)
-                    else await message.channel.send(`**Channel successfully set to receive a random ${CATFACT.substring(0, CATFACT.length-1)} daily at __${timeStr}__**`)
-                } catch(error) {
-                    console.error('Error: ', error)
-                    await message.channel.send(`There was a problem setting this channel to recieve daily ${CATFACT}`)
-                }
-            }
-        } else if(content.toLowerCase() === `${COMMANDCHAR}remove channel ${CATFACT}`) {
-            // Stop the scheduled cron job for the channel for receiving cat facts
-            const collection = message.client.db.db(MONGODATABASE).collection(CRONCOLLECTION)
-            const cronDeleted = await deleteCronJob(message, collection, CATFACT)
-            
-            if(cronDeleted) await message.channel.send(`**Successfully removed this channel from recieving daily ${CATFACT}**`)
-            else await message.channel.send(`**This channel isn't currently receiving daily ${CATFACT}**`)
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                        Gambling Features                                       //
