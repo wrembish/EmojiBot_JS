@@ -3,7 +3,6 @@ const { MONGODATABASE, SUGGESTCOLLECTION } = require('../utils/constants')
 module.exports = {
     name : 'suggest-feature',
     async execute(interaction) {
-        // interaction.fields.getTextInputValue('text-to-convert')
         const collection = interaction.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
         
         const insertDoc = {

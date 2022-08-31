@@ -105,5 +105,6 @@ dist
 
 # EmojiBot Ignores
 package-lock.json
-guildCommands
+guildCommands/**/*.js
+!guildCommands/AdminCommands/*
 nodemon.json

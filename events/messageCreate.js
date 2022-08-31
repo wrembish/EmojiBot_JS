@@ -345,78 +345,6 @@ module.exports = {
             })
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                          Bug Reporting                                         //
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(content.toLowerCase().startsWith(`${COMMANDCHAR}report bug : `) && content.substring(`${COMMANDCHAR}report bug : `.length).length > 0) {
-            // Allows users to report bugs that are tracked in MongoDB
-            const bugDescription = content.substring(`${COMMANDCHAR}report bug : `.length).trim()
-            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
-            await collection.insertOne({
-                ReportedBy : message.author.tag,
-                Description : bugDescription,
-                ReportTime : (new Date(Date.now())).toString(),
-                Status : 'Reported'
-            })
-
-            await message.channel.send(`**${message.author} Your bug has been reported successfully! Thank you for you help in making this bot the best it can be!**`)
-        } else if(content === `${COMMANDCHAR}List Bugs` && process.env.ADMINS.split(',').includes(message.author.id)) {
-            // Allows Admins to list out all non closed bugs
-            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
-            const bugs = await collection.find({}).toArray()
-
-            if(bugs.length === 0) {
-                await message.channel.send('**There are no bugs reported at this time!**')
-                return
-            }
-
-            let i = '1'
-            let bugsShown = 0
-            for(bug of bugs) {
-                if(bug.Status !== 'Closed') {
-                    await message.channel.send(
-                        `**__Bug #${i.padStart(4, '0')}__ : ${bug.Status}**\n` +
-                        `Reported by ${bug.ReportedBy} on ${bug.ReportTime}\n` +
-                        `*${bug.Description}*\n` +
-                        `Bug Id : ${bug._id}\n`
-                    )
-                    ++bugsShown
-                }
-                i = (parseInt(i) + 1).toString()
-            }
-
-            if(bugsShown === 0) {
-                await message.channel.send('**There are no open bugs reported at this time!**')
-            }
-        } else if(content.startsWith(`${COMMANDCHAR}Select Bug `) && process.env.ADMINS.split(',').includes(message.author.id) && content.substring(`${COMMANDCHAR}Select Bug `.length).length === 24) {
-            // Allows Admins to Select a Bug by ID and automatically set it to In Progress Status
-            const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Select Bug `.length))
-            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
-            const bugs = await collection.find({ _id : bugId }).toArray()
-
-            if(bugs.length > 0 && bugs[0].Status === 'Reported') {
-                await collection.updateOne({ _id : bugId }, { $set : { Status : 'In Progress' } })
-                await message.channel.send('**Successfully set the bug\'s status to "In Progress"**')
-            } else if(bugs.length > 0) {
-                await message.channel.send('**This bug is already being worked on!**')
-            } else {
-                await message.channel.send('**Couldn\'t find the bug you were trying to select. Perhaps you mistyped the Bug Id?**')
-            }
-        } else if(content.startsWith(`${COMMANDCHAR}Close Bug `) && process.env.ADMINS.split(',').includes(message.author.id) && content.substring(`${COMMANDCHAR}Close Bug `.length).length === 24) {
-            // Allows Admins to quickly close a Bug by ID
-            const bugId = new ObjectId(content.substring(`${COMMANDCHAR}Close Bug `.length))
-            const collection = message.client.db.db(MONGODATABASE).collection(BUGSCOLLECTION)
-            const bugs = await collection.find({ _id : bugId }).toArray()
-
-            if(bugs.length > 0 && bugs[0].Status !== 'Closed') {
-                await collection.updateOne({ _id : bugId }, { $set : { Status : 'Closed' } })
-                await message.channel.send('**Bug was successfully closed!!**')
-            } else if(bugs.length > 0) {
-                await message.channel.send('**This bug has already been closed!**')
-            } else {
-                await message.channel.send('**Couln\'t find the bug you were trying to close. Perhaps you mistyped the Bug Id?**')
-            }
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                          Create Command                                        //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(content.toLowerCase().startsWith(`${COMMANDCHAR}new command : `) && message.inGuild()) {
@@ -456,60 +384,6 @@ module.exports = {
                 console.error('Error: ', error)
                 await message.channel.send('Your new command was not in the proper format')
             }
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                       Manage Suggestions                                       //
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(process.env.ADMINS.split(',').includes(message.author.id) && content === `${COMMANDCHAR}List Suggestions`) {
-            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
-            const documents = await collection.find({}).toArray()
-
-            for(const doc of documents) {
-                if(doc.Status === 'Submitted') {
-                    await message.channel.send(
-                        '```{\n' +
-                        `    Suggestor : ${doc.User},\n` +
-                        `    Suggestion : ${doc.Suggestion},\n` +
-                        `    Status : ${doc.Status},\n` +
-                        `    Suggestion Id: ${doc._id}\n` +
-                        '}```'
-                    )
-                }
-            }
-
-            for(const doc of documents) {
-                if(doc.Status === 'Accepted') {
-                    await message.channel.send(
-                        '```{\n' +
-                        `    Suggestor : ${doc.User},\n` +
-                        `    Suggestion : ${doc.Suggestion},\n` +
-                        `    Status : ${doc.Status},\n` +
-                        `    Suggestion Id: ${doc._id}\n` +
-                        '}```'
-                    )
-                }
-            }
-        } else if(process.env.ADMINS.split(',').includes(message.author.id) && content.startsWith(`${COMMANDCHAR}Accept Suggestion `) && content.substring(`${COMMANDCHAR}Accept Suggestion `.length).length === 24) {
-            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
-            await collection.update(
-                { _id : new ObjectId(content.substring(`${COMMANDCHAR}Accept Suggestion `.length)) },
-                { $set : { Status : 'Accepted' } }
-            )
-            await message.channel.send('**Successfully updated the suggestion Status to "Accepted"!**')
-        } else if(process.env.ADMINS.split(',').includes(message.author.id) && content.startsWith(`${COMMANDCHAR}Reject Suggestion `) && content.substring(`${COMMANDCHAR}Reject Suggestion `.length).length === 24) {
-            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
-            await collection.update(
-                { _id : new ObjectId(content.substring(`${COMMANDCHAR}Reject Suggestion `.length)) },
-                { $set : { Status : 'Rejected' } }
-            )
-            await message.channel.send('**Successfully updated the suggestion Status to "Rejected"!**')
-        } else if(process.env.ADMINS.split(',').includes(message.author.id) && content.startsWith(`${COMMANDCHAR}Implement Suggestion `) && content.substring(`${COMMANDCHAR}Implement Suggestion `.length).length === 24) {
-            const collection = message.client.db.db(MONGODATABASE).collection(SUGGESTCOLLECTION)
-            await collection.update(
-                { _id : new ObjectId(content.substring(`${COMMANDCHAR}Implement Suggestion `.length)) },
-                { $set : { Status : 'Implemented' } }
-            )
-            await message.channel.send('**Successfully updated the suggestion Status to "Implemented"!**')
         }
     },
 }

@@ -23,6 +23,7 @@ module.exports = {
     // Error Message constants
     DATABASEERRORMESSAGE : 'There was a problem connecting to the database. Please contact an administrator.',
     INTERACTIONERRORMESSAGE : 'There was an error while executing this command!',
+    LACKACCESSERRORMESSAGE : 'You do not have permissions to use this command!',
     // Other constants
     EMBEDCOLOR : 'LuminousVividPink',
     INVITEURL : 'https://www.tinyurl.com/emojiBot',

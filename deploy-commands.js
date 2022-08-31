@@ -39,7 +39,7 @@ try {
         }
 
         rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, guildId), { body : guildCommands })
-            .then(() => console.log(`Sucessfully registered application commands for Guild Id ${guildId}`))
+            .then(() => console.log(`Sucessfully registered Guild Commands`))
             .catch(error => console.error('Error: ', error))
     }
 } catch(error) {

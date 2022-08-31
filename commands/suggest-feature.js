@@ -21,6 +21,6 @@ module.exports = {
 
         modal.addComponents(suggestionActionRow)
 
-        interaction.showModal(modal)
+        await interaction.showModal(modal)
     }
 }
