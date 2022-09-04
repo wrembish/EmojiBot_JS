@@ -95,6 +95,39 @@ module.exports = {
     },
 
     /**
+     * Converts a cron string into a string in the format of HH:MM<AM/PM>
+     * @param {string} cronStr The cron string to convert
+     * @returns A string representation of the given cron string in the format HH:MM<AM/PM>
+     */
+    cronToTimeStr(cronStr) {
+        const cronSplit = cronStr.split(' ')
+        let output = ''
+        let isPM = true
+
+        // hour
+        if(cronSplit[1] === '0') {
+            isPM = false
+            output += '12:'
+        } else if(parseInt(cronSplit[1]) > 12) {
+            isPM = true
+            output += `${parseInt(cronSplit[1]) - 12}:`
+        } else {
+            if (cronSplit[1] === '12') isPM = true
+            else isPM = false
+            output += `${cronSplit[1]}:`
+        }
+
+        // minute
+        output += cronSplit[0]
+
+        // Time of Day
+        if (isPM) output += 'PM'
+        else output += 'AM'
+
+        return output
+    },
+
+    /**
      * Converts a given weekday and time string in the format of HH:MM<AM/PM> to a cron string
      * @param {string} weekday the day of the week
      * @param {string} timeStr the time string in the form of HH:MM<AM/PM>
@@ -189,7 +222,7 @@ module.exports = {
      * Will remove the cron job (if it exists) that corresponds to
      * the message channel and the jobName from the client list of 
      * jobs as well as delete it from the MongoDB collection
-     * @param {Message} element The Discord Message / Interaction object
+     * @param {Message | Interaction} element The Discord Message / Interaction object
      * @param {Collection} collection The MongoDB Collection object
      * @param {string} jobName The name of the job you wish to delete
      * @returns true if a job is deleted, false otherwise

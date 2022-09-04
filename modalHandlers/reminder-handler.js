@@ -17,7 +17,8 @@ module.exports = {
             ChannelId : interaction.channelId,
             JobName : REMINDER,
             CronStr : cronStr,
-            Message : interaction.fields.getTextInputValue('reminder-message')
+            Message : interaction.fields.getTextInputValue('reminder-message'),
+            OwnerId : interaction.user.id
         } 
         const insertedJob = await collection.insertOne(JobInsert)
   

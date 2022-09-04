@@ -37,6 +37,10 @@ module.exports = {
         'saturday' : 6, 'sat' : 6, '6' : 6,
         'everyday' : '*', 'every day' : '*', 'every' : '*', 'all' : '*', 'all days' : '*', '*' : '*'
     },
+    CRONWEEKDAYS : {
+        '0' : 'Sunday', '1' : 'Monday', '2' : 'Tuesday', '3' : 'Wednesday',
+        '4' : 'Thursday', '5' : 'Friday', '6' : 'Saturday', '*' : 'Everyday'
+    },
     // New Command constants
     NEWCOMMAND :
         'const { SlashCommandBuilder } = require("discord.js")\n\n' +
