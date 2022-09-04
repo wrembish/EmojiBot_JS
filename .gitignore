@@ -108,3 +108,4 @@ package-lock.json
 guildCommands/**/*.js
 !guildCommands/AdminCommands/*
 nodemon.json
+**/*test*
