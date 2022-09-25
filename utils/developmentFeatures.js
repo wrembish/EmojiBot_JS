@@ -15,6 +15,7 @@ module.exports = {
         `    - "${COMMANDCHAR}gamble <number>"\n` +
         `    - "${COMMANDCHAR}give <@mention> <number>"\n` +
         `    - "${COMMANDCHAR}give <number> <@mention>"\n` +
+        `- !!xlsx2csv : upload an xlsx file along with this command to convert it to a csv file\n` + 
         '```\n\n' +
         `**To add me to your own server, you can use this link ${INVITEURL} **`,
     REPORTBUG : `** *To Report a bug, use /report-bug !* **\n` +
