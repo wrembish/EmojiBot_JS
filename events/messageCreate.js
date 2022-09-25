@@ -1,5 +1,5 @@
 const { COMMANDCHAR, DATABASEERRORMESSAGE, EMOJI , MONGODATABASE, POINTSCOLLECTION } = require('../utils/constants.js')
-const { convert } = require('../utils/helpers.js')
+const { convert, xlsxToCsv, download } = require('../utils/helpers.js')
 
 module.exports = {
     name : 'messageCreate',
@@ -254,6 +254,28 @@ module.exports = {
                     `**${user}, you have been given __${pointsToGive}__ points by ${message.author.tag}!**\n`+
                     `**You now have __${userPoints}__ points!**`
                 )
+            })
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                      File Handling Features                                    //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        else if(content === `${COMMANDCHAR}xlsx2csv` && message.attachments.size !== 0) {
+            message.attachments.each(async att => {
+                const fs = require('fs')
+                const path = require('path')
+    
+                const dirPath = path.join(__dirname, '..', 'temporaryFiles')
+                const xlPath = path.join(dirPath, 'temp.xlsx')
+                const csvPath = path.join(dirPath, att.name.substring(0, att.name.length - 5) + '.csv')
+    
+                download(att.attachment, xlPath, async () => {
+                    xlsxToCsv(csvPath, dirPath)
+                    fs.writeFileSync(xlPath, '')
+    
+                    await message.channel.send({ content : '**Here is your excel converted to csv**', files : [csvPath] })
+                    
+                    fs.rm(csvPath, () => {})
+                })
             })
         }
     },

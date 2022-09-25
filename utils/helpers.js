@@ -240,5 +240,44 @@ module.exports = {
         } if (index) element.client.cronJobs.splice(index, 1)
 
         return index != undefined
+    },
+
+    /**
+     * Will convert an xlsx file into a csv file
+     * @param {fs.PathLike} csvPath Path to the csv file to create
+     * @param {fs.PathLike} dirPath Path to the directory the xlsx file is stored in
+     */
+    xlsxToCsv(csvPath, dirPath) {
+        const fs = require('node:fs')
+        const path = require('node:path')
+        const xlsx = require('node-xlsx')
+
+        const xlPath = path.join(dirPath, 'temp.xlsx')
+        const xl = xlsx.parse(xlPath)[0].data
+
+        let csv = ''
+        for (const row of xl) csv += row.join(',') + '\n'
+
+        fs.writeFileSync(csvPath, csv.trim())
+    },
+
+    /**
+     * Downloads a file from the given url and saves it to the file passed in the destination parameter
+     * @param {string} url the url to download from
+     * @param {fs.PathLike} destination the destination file to save the downloaded data
+     * @param {Function} callback the callback function to call once the download finishes
+     */
+    download(url, destination, callback) {
+        const fs = require('node:fs')
+        const path = require('node:path')
+        const https = require('https')
+
+        const file = fs.createWriteStream(destination)
+            https.get(url, response => {
+                response.pipe(file)
+                file.on('finish', () => {
+                    file.close(callback)
+            })
+        })
     }
 }
